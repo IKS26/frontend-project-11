@@ -13,7 +13,6 @@ const config = {
     output: {
         path: resolve(__dirname, 'dist'),
         filename: 'bundle.js',
-        publicPath: '/', // Указание для корректной работы статики
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -27,7 +26,6 @@ const config = {
             {
                 test: /\.(js|jsx)$/i,
                 loader: 'babel-loader',
-                exclude: /node_modules/,
             },
             {
                 test: /\.css$/i,
@@ -39,7 +37,14 @@ const config = {
             },
         ],
     },
-     mode: isProduction ? 'production' : 'development',
+    devServer: {
+        static: {
+            directory: resolve(__dirname, 'dist'),
+        },
+        compress: true,
+        port: 3000,
+    },
+    mode: isProduction ? 'production' : 'development',
 };
 
 export default config;
