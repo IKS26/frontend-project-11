@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Клонируем репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Устанавливаем Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Устанавливаем зависимости
+      - name: Install dependencies
+        run: npm ci
+
+      # Линтинг кода
+      - name: Run ESLint
+        run: npm run lint
+
+      # Сборка проекта для production
+      - name: Build for production
+        env:
+          NODE_ENV: production
+        run: npm run build
+
+      # Проверка тестов
+      - name: Run tests
+        run: npm test

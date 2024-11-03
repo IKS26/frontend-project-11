@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSS агрегатор</title>
+</head>
+<body class="d-flex flex-column min-vh-100 bg-dark text-light">
+    <!-- Контейнер -->
+    <div class="container-fluid pt-5 d-flex flex-column flex-grow-1">	
+      
+        <!-- Заголовок, описание и форма для добавления RSS -->
+        <div class="row justify-content-center mb-4">
+			   <div class="col-md-6 mb-4">
+				      <h1 class="display-4">RSS агрегатор</h1>
+				      <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+					<div class="d-flex flex-content-between">
+						<input type="text" class="form-control" placeholder="Ссылка RSS" aria-label="RSS URL">
+						<button class="btn btn-primary btn-lg mx-3" type="button">Добавить</button>
+				   </div>
+		      </div>
+          </div>
+
+        <!-- Блок для вывода контента RSS -->        
+        <div class="row flex-grow-1">
+            <div class="col">
+                <div id="rss-content" class="bg-white text-dark p-4 h-100"></div>
+            </div>
+        </div>
+
+		  <!-- Подвал с подписью -->
+		  <footer class="mt-auto text-center py-3 bg-light text-dark border-top">
+			<p class="small mb-0">created by <a href="https://github.com/IKS26" target="_blank" class="text-primary">IKS</a></p>
+	  </footer>
+    </div>    
+</body>
+</html>
