@@ -39,15 +39,7 @@ const config = {
             },
         ],
     },
-    devServer: {
-        static: {
-            directory: resolve(__dirname, 'dist'),
-        },
-        compress: true,
-        port: 3000,
-        historyApiFallback: true, // добавлен для поддержки маршрутизации
-    },
-    mode: isProduction ? 'production' : 'development',
+     mode: isProduction ? 'production' : 'development',
 };
 
 export default config;
