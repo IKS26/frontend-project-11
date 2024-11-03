@@ -2,44 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Клонируем репозиторий
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      # Кэшируем node_modules
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
-      # Устанавливаем Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # Устанавливаем зависимости
       - name: Install dependencies
-        run: node --max-old-space-size=4096 $(which npm) ci
+        run: npm ci
 
-      # Линтинг кода
-      - name: Run ESLint
+      - name: Lint code
         run: npm run lint
 
-      # Сборка проекта для production
-      - name: Build for production
-        env:
-          NODE_ENV: production
+      - name: Build project
         run: npm run build

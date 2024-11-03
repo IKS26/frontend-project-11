@@ -1,10 +1,7 @@
-.PHONY: develop install build lint
+.PHONY: develop build lint
 
 develop:
 	npx webpack serve
-
-install:
-	npm ci
 
 build:
 	NODE_ENV=production npx webpack
