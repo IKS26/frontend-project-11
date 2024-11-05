@@ -1,8 +1,8 @@
 // Начальное состояние приложения
 const state = {
-	feeds: [],
+	feeds: [], // Список RSS-лент (фиды = новостные ленты/каналы)
 	feedback: '', // Сюда добавляем сообщения об успехе или ошибке
- };
- 
- export default state;
- 
+};
+
+export default state;
+

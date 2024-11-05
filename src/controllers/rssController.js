@@ -1,20 +1,18 @@
-import { validateUrl } from '../utils/validation.js';
-import { showError, clearInputField } from '../views/view.js';
-import { addRss } from '../models/model.js'; // Добавление RSS в список
+import { validateRSS } from '../utils/validation.js';
+import { addRss } from '../models/model.js';
 
-// Функция для инициализации обработчика событий
-export function initFormHandler(formElement, inputElement, state) {
-  formElement.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const url = inputElement.value.trim();
+export const handleRSSSubmit = (event, state) => {
+  event.preventDefault();
+  const url = event.target.url.value.trim();
 
-    validateUrl(url, state.feeds)
-      .then(() => {
-        addRss(url, state); // Добавляем в состояние
-        clearInputField(inputElement); // Очищаем поле и возвращаем фокус
-      })
-      .catch((error) => {
-        showError(error.message); // Показываем сообщение об ошибке
-      });
-  });
-}
+  validateRSS(state.feeds)
+    .validate(url)
+    .then((validUrl) => {
+      addRss(validUrl, state);
+      state.feedback = 'rss_added';
+      event.target.reset();
+    })
+    .catch((err) => {
+      state.feedback = err.errors[0];  // Устанавливаем ключ ошибки для i18next
+    });
+};

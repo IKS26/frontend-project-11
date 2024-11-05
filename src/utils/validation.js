@@ -1,10 +1,17 @@
 import * as yup from 'yup';
+import i18next from 'i18next';
 
-export function validateUrl(url, existingFeeds) {
-  const schema = yup.string()
-    .url('Неверный формат URL')
-    .notOneOf(existingFeeds, 'RSS уже добавлен')
-    .required('Поле обязательно для заполнения');
+yup.setLocale({
+  string: {
+    url: () => i18next.t('error_invalid_url'),
+  },
+  mixed: {
+    notOneOf: () => i18next.t('error_duplicate'),
+  },
+});
 
-  return schema.validate(url);
+export function validateRSS(existingFeeds) {
+  return yup.string()
+    .url()
+    .notOneOf(existingFeeds);
 }
