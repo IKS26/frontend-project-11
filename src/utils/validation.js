@@ -11,7 +11,12 @@ yup.setLocale({
 });
 
 export function validateRSS(existingFeeds) {
+  // Преобразуем Proxy обратно в массив и извлекаем только URL
+  const feeds = existingFeeds.map(feed => feed.url);
+  console.log('Validating URL against feeds:', feeds);
+
   return yup.string()
     .url()
-    .notOneOf(existingFeeds);
+    .notOneOf(feeds, i18next.t('error_duplicate')); // Используем только URL для проверки
 }
+

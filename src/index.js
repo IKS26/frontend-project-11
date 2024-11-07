@@ -1,14 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-
 import initView from './views/view.js';
-import state from './models/state.js';
-
+import state from './models/model.js';
 import en from './locales/en.json';
 import ru from './locales/ru.json';
 
-// Инициализируем i18next для переключения языков
+// Инициализация i18next
 i18next
   .use(LanguageDetector)
   .init({
@@ -20,5 +18,6 @@ i18next
     debug: false,
   });
 
-// Инициализация состояния и обработчика формы
-const watchedState = initView(state);
+// Инициализация вида
+console.log('Initializing app...');
+initView(state);

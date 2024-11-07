@@ -9,5 +9,7 @@
 	  "ecmaVersion": 2021
 	},
 	"extends": "eslint:recommended",
-	"rules": {}
+	"rules": {
+	  "no-console": "off"
+	}
 }
