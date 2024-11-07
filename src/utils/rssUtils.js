@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const POLL_INTERVAL = 5000;
+
 export function loadRSS(url) {
   const proxyUrl = `https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}&disableCache=true`;
   console.log('Fetching from:', proxyUrl);
@@ -42,5 +44,34 @@ export function parseRSS(data) {
         reject(new Error('parsing_error'));
       }
     }
+  });
+}
+
+export function updateRSSFeeds(state, onNewPosts) {
+  const updatePromises = state.feeds.map((feed) =>
+    loadRSS(feed.url)
+      .then(parseRSS)
+      .then((parsedData) => {
+        const existingPostsLinks = new Set(
+          state.posts.map((post) => post.link),
+        );
+        const newPosts = parsedData.items.filter(
+          (item) => !existingPostsLinks.has(item.link),
+        );
+
+        // Если есть новые посты, вызываем onNewPosts
+        if (newPosts.length > 0) {
+          const posts = newPosts.map((item) => ({ ...item, feedId: feed.id }));
+          onNewPosts(feed, posts);
+        }
+      })
+      .catch((error) =>
+        console.error(`Failed to update feed ${feed.url}:`, error),
+      ),
+  );
+
+  // Устанавливаем таймер на следующий цикл обновления после завершения всех текущих
+  Promise.all(updatePromises).then(() => {
+    setTimeout(() => updateRSSFeeds(state, onNewPosts), POLL_INTERVAL);
   });
 }

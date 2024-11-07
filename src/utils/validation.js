@@ -15,5 +15,6 @@ export function validateRSS(existingFeeds) {
   const feeds = existingFeeds.map((feed) => feed.url);
   console.log('Validating URL against feeds:', feeds);
 
-  return yup.string().url().notOneOf(feeds, i18next.t('error_duplicate')); // Используем только URL для проверки
+  // Используем только URL для проверки
+  return yup.string().url().notOneOf(feeds, i18next.t('error_duplicate'));
 }

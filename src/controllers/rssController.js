@@ -1,7 +1,8 @@
 import { validateRSS } from '../utils/validation.js';
-import { loadRSS, parseRSS } from '../utils/rssUtils.js';
+import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils.js';
 import { addRss } from '../models/model.js';
 
+// Обработчик отправки URL
 export const handleRSSSubmit = (event, state) => {
   event.preventDefault();
   const url = event.target.url.value.trim();
@@ -10,7 +11,7 @@ export const handleRSSSubmit = (event, state) => {
   console.log(
     'Current feeds:',
     state.feeds.map((feed) => feed.url),
-  ); // Логируем только URL
+  );
 
   validateRSS(state.feeds)
     .validate(url)
@@ -36,11 +37,19 @@ export const handleRSSSubmit = (event, state) => {
 
       if (err.name === 'ValidationError') {
         console.log('Validation error details:', err.errors);
-        state.feedback = err.errors[0]; // Сообщение об ошибке из yup
+        state.feedback = err.errors[0];
       } else if (err.message === 'network_error') {
         state.feedback = 'Network error occurred';
       } else {
         state.feedback = 'Parsing error';
       }
     });
+};
+
+// Функция запуска обновлений
+export const startRSSUpdates = (state) => {
+  const onNewPosts = (feed, newPosts) => {
+    addRss(feed, newPosts, state);
+  };
+  updateRSSFeeds(state, onNewPosts);
 };
