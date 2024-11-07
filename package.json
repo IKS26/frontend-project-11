@@ -1,51 +1,52 @@
 {
-	"name": "@hexlet/code",
-	"version": "1.0.0",
-	"description": "RSS-reader",
-	"main": "src/index.js",
-	"type": "module",
-	"scripts": {
-		"develop": "webpack serve",
-		"build": "NODE_ENV=production webpack",
-		"lint": "npx eslint .",
-		"vercel-build": "npm run build && mv dist public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/IKS26/frontend-project-11.git"
-	},
-	"author": "IKS",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/IKS26/frontend-project-11/issues"
-	},
-	"homepage": "https://github.com/IKS26/frontend-project-11#readme",
-	"devDependencies": {
-		"@babel/core": "^7.26.0",
-		"@babel/plugin-syntax-dynamic-import": "^7.8.3",
-		"@babel/preset-env": "^7.26.0",
-		"autoprefixer": "^10.4.20",
-		"babel-loader": "^9.2.1",
-		"css-loader": "^7.1.2",
-		"eslint": "^8.57.1",
-		"eslint-config-airbnb-base": "^15.0.0",
-		"eslint-plugin-import": "^2.31.0",
-		"html-webpack-plugin": "^5.6.3",
-		"mini-css-extract-plugin": "^2.9.2",
-		"postcss": "^8.4.47",
-		"postcss-loader": "^8.1.1",
-		"postcss-preset-env": "^10.0.9",
-		"style-loader": "^4.0.0",
-		"webpack": "^5.96.1",
-		"webpack-cli": "^5.1.4",
-		"webpack-dev-server": "^5.1.0"
-	},
-	"dependencies": {
-		"axios": "^1.7.7",
-		"bootstrap": "^5.3.3",
-		"i18next": "^23.16.4",
-		"i18next-browser-languagedetector": "^8.0.0",
-		"on-change": "^5.0.1",
-		"yup": "^1.4.0"
-	}
+  "name": "@hexlet/code",
+  "version": "1.0.0",
+  "description": "RSS-reader",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "develop": "webpack serve",
+    "build": "NODE_ENV=production webpack",
+    "lint": "npx eslint .",
+    "vercel-build": "npm run build && mv dist public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IKS26/frontend-project-11.git"
+  },
+  "author": "IKS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IKS26/frontend-project-11/issues"
+  },
+  "homepage": "https://github.com/IKS26/frontend-project-11#readme",
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/preset-env": "^7.26.0",
+    "autoprefixer": "^10.4.20",
+    "babel-loader": "^9.2.1",
+    "css-loader": "^7.1.2",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
+    "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
+    "postcss": "^8.4.47",
+    "postcss-loader": "^8.1.1",
+    "postcss-preset-env": "^10.0.9",
+    "prettier": "^3.3.3",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
+    "i18next": "^23.16.4",
+    "i18next-browser-languagedetector": "^8.0.0",
+    "on-change": "^5.0.1",
+    "yup": "^1.4.0"
+  }
 }

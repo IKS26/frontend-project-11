@@ -1,5 +1,5 @@
 {
-	"rss_added": "RSS successfully added",
-	"error_invalid_url": "Invalid URL format",
-	"error_duplicate": "RSS already added"
+  "rss_added": "RSS successfully added",
+  "error_invalid_url": "Invalid URL format",
+  "error_duplicate": "RSS already added"
 }

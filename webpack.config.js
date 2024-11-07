@@ -38,13 +38,13 @@ const config = {
     ],
   },
   devServer: {
-	static: {
-	  directory: resolve(__dirname, 'dist'),
-	},
-	hot: true,
-	liveReload: false,
-	compress: true,
-	port: 3000,
+    static: {
+      directory: resolve(__dirname, 'dist'),
+    },
+    hot: true,
+    liveReload: false,
+    compress: true,
+    port: 3000,
   },
   mode: isProduction ? 'production' : 'development',
 };

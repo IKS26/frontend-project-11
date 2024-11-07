@@ -5,7 +5,7 @@ import { handleRSSSubmit } from '../controllers/rssController.js';
 function renderFeed(feed, container) {
   const feedElement = document.createElement('li');
   feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
-  
+
   feedElement.innerHTML = `
     <h3 class="h6 m-0">${feed.title}</h3>
     <p class="m-0 small text-black-50">${feed.description}</p>
@@ -16,8 +16,15 @@ function renderFeed(feed, container) {
 function renderPosts(posts, container) {
   posts.forEach((post) => {
     const postElement = document.createElement('li');
-    postElement.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-    
+    postElement.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0',
+    );
+
     postElement.innerHTML = `
       <a href="${post.link}" class="fw-bold" data-id="${post.feedId}" target="_blank" rel="noopener noreferrer">${post.title}</a>
       <button type="button" class="btn btn-outline-primary btn-sm" data-id="${post.feedId}" data-bs-toggle="modal" data-bs-target="#post-modal">Просмотр</button>
@@ -52,7 +59,9 @@ export default function initView(state) {
       if (value === 'rss_added') {
         showSuccess(feedbackElement, inputElement, 'rss_added');
         const newFeed = state.feeds[state.feeds.length - 1];
-        const newPosts = state.posts.filter(post => post.feedId === newFeed.id);
+        const newPosts = state.posts.filter(
+          (post) => post.feedId === newFeed.id,
+        );
         renderFeed(newFeed, feedsContainer);
         renderPosts(newPosts, postsContainer);
       } else {
@@ -61,6 +70,8 @@ export default function initView(state) {
     }
   });
 
-  form.addEventListener('submit', (event) => handleRSSSubmit(event, watchedState));
+  form.addEventListener('submit', (event) =>
+    handleRSSSubmit(event, watchedState),
+  );
   return watchedState;
 }

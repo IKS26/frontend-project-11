@@ -7,16 +7,14 @@ import en from './locales/en.json';
 import ru from './locales/ru.json';
 
 // Инициализация i18next
-i18next
-  .use(LanguageDetector)
-  .init({
-    resources: {
-      en: { translation: en },
-      ru: { translation: ru },
-    },
-    fallbackLng: 'en',
-    debug: false,
-  });
+i18next.use(LanguageDetector).init({
+  resources: {
+    en: { translation: en },
+    ru: { translation: ru },
+  },
+  fallbackLng: 'en',
+  debug: false,
+});
 
 // Инициализация вида
 console.log('Initializing app...');
