@@ -2,6 +2,7 @@ import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils.js';
 import { validateRSS } from '../utils/validation.js';
 import { showModal, hideModal, updatePostClass } from '../views/view.js';
 import { addRss, getPostById, markPostAsRead } from '../models/model.js';
+import i18next from 'i18next';
 
 export const handleRSSSubmit = (event, state) => {
   event.preventDefault();
@@ -16,15 +17,16 @@ export const handleRSSSubmit = (event, state) => {
       const feed = { id: Date.now(), url, title, description };
       const posts = items.map((item) => ({ ...item, feedId: feed.id }));
       addRss(feed, posts, state);
+      state.feedback = i18next.t('rss_added');
       event.target.reset();
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         state.feedback = err.errors[0];
       } else if (err.message === 'network_error') {
-        state.feedback = 'Network error occurred';
+        state.feedback = i18next.t('network_error');
       } else {
-        state.feedback = 'Parsing error';
+        state.feedback = i18next.t('invalid_rss');
       }
     });
 };

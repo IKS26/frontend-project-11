@@ -28,14 +28,14 @@ function renderPosts(posts, container, state) {
       'justify-content-between',
       'align-items-start',
       'border-0',
-      'border-end-0',
+      'border-end-0'
     );
 
     const postClass = state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
 
     postElement.innerHTML = `
       <a href="${post.link}" class="${postClass}" data-id="${post.feedId}" target="_blank" rel="noopener noreferrer">${post.title}</a>
-      <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">Просмотр</button>
+      <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18next.t('preview')}</button>
     `;
 
     container.appendChild(postElement);
@@ -49,18 +49,18 @@ function renderPosts(posts, container, state) {
   });
 }
 
-function showError(feedbackElement, inputElement, message) {
-  feedbackElement.textContent = i18next.t(message);
-  feedbackElement.classList.add('text-danger');
-  feedbackElement.classList.remove('text-success');
-  inputElement.classList.add('is-invalid');
-}
-
 function showSuccess(feedbackElement, inputElement, message) {
   feedbackElement.textContent = i18next.t(message);
   feedbackElement.classList.add('text-success');
   feedbackElement.classList.remove('text-danger');
   inputElement.classList.remove('is-invalid');
+}
+
+function showError(feedbackElement, inputElement, message) {
+  feedbackElement.textContent = i18next.t(message);
+  feedbackElement.classList.add('text-danger');
+  feedbackElement.classList.remove('text-success');
+  inputElement.classList.add('is-invalid');
 }
 
 export function showModal(title, description, link) {
@@ -110,7 +110,7 @@ export default function initView(state) {
         showSuccess(feedbackElement, inputElement, 'rss_added');
         const newFeed = state.feeds[state.feeds.length - 1];
         const newPosts = state.posts.filter(
-          (post) => post.feedId === newFeed.id,
+          (post) => post.feedId === newFeed.id
         );
         renderFeed(newFeed, feedsContainer);
         renderPosts(newPosts, postsContainer, state); // Передаем state
@@ -121,7 +121,7 @@ export default function initView(state) {
   });
 
   form.addEventListener('submit', (event) =>
-    handleRSSSubmit(event, watchedState),
+    handleRSSSubmit(event, watchedState)
   );
   return watchedState;
 }

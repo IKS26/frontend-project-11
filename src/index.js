@@ -15,15 +15,16 @@ if (!window.appInitialized) {
 
   // Инициализация i18next
   i18next.use(LanguageDetector).init({
+    lng: 'ru', // Устанавливаем русский язык по умолчанию
+    fallbackLng: 'en', // Язык, на который будет происходить откат, если перевод на русском недоступен
     resources: {
       en: { translation: en },
       ru: { translation: ru },
     },
-    fallbackLng: 'en',
     debug: false,
   });
 
-  // Инициализация вида
+  // Инициализация приложения
   initView(state);
 
   // Запуск регулярного обновления RSS-лент
@@ -42,6 +43,6 @@ if (import.meta.webpackHot) {
       // Повторно вызываем только обновленные модули
       initView(state);
       startRSSUpdates(state);
-    },
+    }
   );
 }

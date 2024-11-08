@@ -1,11 +1,29 @@
-.PHONY: develop build lint
+.PHONY: install lint lint-fix format build develop vercel-build
 
-develop:
-	npx webpack serve
+# Установка зависимостей
+install:
+    npm ci
 
-build:
-	NODE_ENV=production npx webpack
-
+# Запуск линтера
 lint:
-	npx eslint .
+    npm run lint
 
+# Исправление ошибок линтера
+lint-fix:
+    npm run lint-fix
+
+# Форматирование кода с помощью Prettier
+format:
+    npm run format
+
+# Сборка проекта
+build:
+    npm run build
+
+# Локальная разработка
+develop:
+    npm run develop
+
+# Сборка для Vercel
+vercel-build:
+    npm run vercel-build

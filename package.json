@@ -5,9 +5,11 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "develop": "webpack serve",
+    "lint": "eslint src/**/*.js",
+    "lint-fix": "eslint src/**/*.js --fix",
+    "format": "prettier --write \"src/**/*.{js,json,css}\"",
+	 "develop": "webpack serve",
     "build": "NODE_ENV=production webpack",
-    "lint": "npx eslint .",
     "vercel-build": "npm run build && mv dist public"
   },
   "repository": {
@@ -29,7 +31,9 @@
     "css-loader": "^7.1.2",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "html-webpack-plugin": "^5.6.3",
     "mini-css-extract-plugin": "^2.9.2",
     "postcss": "^8.4.47",

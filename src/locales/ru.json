@@ -1,5 +1,9 @@
 {
   "rss_added": "RSS успешно добавлен",
-  "error_invalid_url": "Неверный формат URL",
-  "error_duplicate": "RSS уже добавлен"
+  "error_invalid_url": "Ссылка должна быть валидным URL",
+  "error_duplicate": "RSS уже добавлен",
+  "empty_field": "Не должно быть пустым",
+  "invalid_rss": "Ресурс не содержит валидный RSS",
+  "preview": "Просмотр",
+  "network_error": "Ошибка сети"
 }
