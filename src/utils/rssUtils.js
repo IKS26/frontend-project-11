@@ -36,6 +36,7 @@ export function parseRSS(data) {
         const items = Array.from(xml.querySelectorAll('item')).map((item) => ({
           title: item.querySelector('title').textContent,
           link: item.querySelector('link').textContent,
+          description: item.querySelector('description').textContent,
         }));
 
         resolve({ title, description, items });

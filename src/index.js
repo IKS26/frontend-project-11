@@ -1,8 +1,9 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/style.css';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { startRSSUpdates } from './controllers/rssController.js';
 import initView from './views/view.js';
+import './views/modal.js';
 import state from './models/model.js';
 import en from './locales/en.json';
 import ru from './locales/ru.json';

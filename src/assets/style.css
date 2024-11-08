@@ -1,0 +1,45 @@
+.modal-header {
+  display: flex;
+  align-items: center; /* Выравниваем элементы по верхнему краю */
+  justify-content: space-between;
+  position: relative; /* Устанавливаем позиционирование для родительского элемента */
+}
+
+.modal-title {
+  padding-right: 40px;
+}
+
+.btn-close.custom-close {
+  padding: 0;
+  background: none;
+  border: none;
+  appearance: none;
+  display: flex;
+  align-items: flex-start;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.btn-close.custom-close::before,
+.btn-close.custom-close::after {
+  display: none;
+}
+
+.btn-close.custom-close .bi {
+  margin-top: 8px;
+  margin-left: -16px;
+}
+
+/* Удаление фокусной рамки */
+.btn-close.custom-close:focus,
+.btn-close.custom-close:focus-visible {
+  outline: none; /* Убираем стандартную фокусную рамку */
+  box-shadow: none; /* Убираем тень */
+}
+
+/* Стили для прочитанных ссылок */
+a.fw-normal {
+  color: gray; /* Устанавливаем серый цвет для прочитанных ссылок */
+}

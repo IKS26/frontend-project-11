@@ -7,9 +7,45 @@
       content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
     />
     <title>RSS агрегатор</title>
-    <script src="bundle.js" defer></script>
   </head>
   <body class="d-flex flex-column min-vh-100">
+    <!-- Модальное окно -->
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"></h5>
+            <button
+              type="button"
+              class="btn-close custom-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <i class="bi bi-x-square-fill"></i>
+            </button>
+          </div>
+          <div class="modal-body text-break"></div>
+          <div class="modal-footer">
+            <a
+              href=""
+              class="btn btn-primary full-article"
+              role="button"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Читать полностью</a
+            >
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Закрыть
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Контейнер -->
     <main class="flex-grow-1">
       <!-- Секция заголовка и формы -->

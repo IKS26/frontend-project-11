@@ -1,6 +1,10 @@
+import bootstrap from '../assets/bootstrap.js';
 import onChange from 'on-change';
 import i18next from 'i18next';
-import { handleRSSSubmit } from '../controllers/rssController.js';
+import {
+  handleRSSSubmit,
+  handlePostPreview,
+} from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
   const feedElement = document.createElement('li');
@@ -13,7 +17,9 @@ function renderFeed(feed, container) {
   container.appendChild(feedElement);
 }
 
-function renderPosts(posts, container) {
+function renderPosts(posts, container, state) {
+  container.innerHTML = ''; // Очистка контейнера перед рендерингом новых постов
+
   posts.forEach((post) => {
     const postElement = document.createElement('li');
     postElement.classList.add(
@@ -25,11 +31,21 @@ function renderPosts(posts, container) {
       'border-end-0',
     );
 
+    const postClass = state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
+
     postElement.innerHTML = `
-      <a href="${post.link}" class="fw-bold" data-id="${post.feedId}" target="_blank" rel="noopener noreferrer">${post.title}</a>
-      <button type="button" class="btn btn-outline-primary btn-sm" data-id="${post.feedId}" data-bs-toggle="modal" data-bs-target="#post-modal">Просмотр</button>
+      <a href="${post.link}" class="${postClass}" data-id="${post.feedId}" target="_blank" rel="noopener noreferrer">${post.title}</a>
+      <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">Просмотр</button>
     `;
+
     container.appendChild(postElement);
+  });
+
+  container.querySelectorAll('.post-preview').forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const postId = event.target.dataset.postId;
+      handlePostPreview(postId, state); // Передаем state сюда
+    });
   });
 }
 
@@ -45,6 +61,40 @@ function showSuccess(feedbackElement, inputElement, message) {
   feedbackElement.classList.add('text-success');
   feedbackElement.classList.remove('text-danger');
   inputElement.classList.remove('is-invalid');
+}
+
+export function showModal(title, description, link) {
+  const modalElement = document.getElementById('modal');
+  const modalTitle = modalElement.querySelector('.modal-title');
+  const modalBody = modalElement.querySelector('.modal-body');
+  const fullArticleButton = modalElement.querySelector('.full-article');
+
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  fullArticleButton.href = link;
+
+  const modal = new bootstrap.Modal(modalElement);
+  modal.show();
+}
+
+export function hideModal() {
+  const modalElement = document.getElementById('modal');
+
+  const modal = bootstrap.Modal.getInstance(modalElement);
+  if (modal) {
+    modal.hide();
+  }
+}
+
+export function updatePostClass(postId) {
+  const postElement = document
+    .querySelector(`button[data-post-id="${postId}"]`)
+    .closest('li');
+  const linkElement = postElement.querySelector('a');
+  if (linkElement) {
+    linkElement.classList.remove('fw-bold');
+    linkElement.classList.add('fw-normal');
+  }
 }
 
 export default function initView(state) {
@@ -63,7 +113,7 @@ export default function initView(state) {
           (post) => post.feedId === newFeed.id,
         );
         renderFeed(newFeed, feedsContainer);
-        renderPosts(newPosts, postsContainer);
+        renderPosts(newPosts, postsContainer, state); // Передаем state
       } else {
         showError(feedbackElement, inputElement, value);
       }
