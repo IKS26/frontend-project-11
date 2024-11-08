@@ -13,7 +13,7 @@ export function addRss(feed, posts, state) {
       id: `${feed.id}-${index}`,
     }));
     state.posts.push(...postsWithId);
-    state.feedback = 'rss_added'; // Устанавливаем ключ для обратной связи
+    state.feedback = 'rss_added'; // Обновляем сразу
   } else {
     console.error('State feeds or posts are not arrays.');
   }
