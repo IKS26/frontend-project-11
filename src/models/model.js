@@ -1,5 +1,3 @@
-import i18next from 'i18next';
-
 const state = {
   feeds: [], // Список RSS-лент
   posts: [], // Список постов
@@ -15,7 +13,7 @@ export function addRss(feed, posts, state) {
       id: `${feed.id}-${index}`,
     }));
     state.posts.push(...postsWithId);
-    state.feedback = i18next.t('rss_added');
+    state.feedback = 'rss_added'; // Устанавливаем ключ для обратной связи
   } else {
     console.error('State feeds or posts are not arrays.');
   }

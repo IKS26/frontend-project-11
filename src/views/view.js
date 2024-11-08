@@ -44,13 +44,13 @@ function renderPosts(posts, container, state) {
   container.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
       const postId = event.target.dataset.postId;
-      handlePostPreview(postId, state); // Передаем state сюда
+      handlePostPreview(postId, state);
     });
   });
 }
 
-function showSuccess(feedbackElement, inputElement, message) {
-  feedbackElement.textContent = i18next.t(message);
+function showSuccess(feedbackElement, inputElement) {
+  feedbackElement.textContent = i18next.t('rss_added');
   feedbackElement.classList.add('text-success');
   feedbackElement.classList.remove('text-danger');
   inputElement.classList.remove('is-invalid');
@@ -107,13 +107,14 @@ export default function initView(state) {
   const watchedState = onChange(state, (path, value) => {
     if (path === 'feedback') {
       if (value === 'rss_added') {
-        showSuccess(feedbackElement, inputElement, 'rss_added');
+        showSuccess(feedbackElement, inputElement);
         const newFeed = state.feeds[state.feeds.length - 1];
         const newPosts = state.posts.filter(
           (post) => post.feedId === newFeed.id
         );
         renderFeed(newFeed, feedsContainer);
-        renderPosts(newPosts, postsContainer, state); // Передаем state
+        renderPosts(newPosts, postsContainer, state);
+        state.feedback = ''; // Очистка feedback после отображения
       } else {
         showError(feedbackElement, inputElement, value);
       }
