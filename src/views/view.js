@@ -7,6 +7,7 @@ import {
 } from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
+  container.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
   const feedElement = document.createElement('li');
   feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
 
