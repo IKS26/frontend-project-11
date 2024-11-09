@@ -1,13 +1,11 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-import {
-  handleRSSSubmit,
-  handlePostPreview
-} from '../controllers/rssController.js';
+import { handleRSSSubmit, handlePostPreview } from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
-  container.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
+  const containerElement = container;
+  containerElement.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
   const feedElement = document.createElement('li');
   feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
 
@@ -15,11 +13,12 @@ function renderFeed(feed, container) {
     <h3 class="h6 m-0">${feed.title}</h3>
     <p class="m-0 small text-black-50">${feed.description}</p>
   `;
-  container.appendChild(feedElement);
+  containerElement.appendChild(feedElement);
 }
 
 function renderPosts(posts, container, state) {
-  container.innerHTML = ''; // Очистка контейнера перед рендерингом новых постов
+  const containerElement = container;
+  containerElement.innerHTML = ''; // Очистка контейнера перед рендерингом новых постов
 
   posts.forEach((post) => {
     const postElement = document.createElement('li');
@@ -39,10 +38,10 @@ function renderPosts(posts, container, state) {
       <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18next.t('preview')}</button>
     `;
 
-    container.appendChild(postElement);
+    containerElement.appendChild(postElement);
   });
 
-  container.querySelectorAll('.post-preview').forEach((button) => {
+  containerElement.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
       const { postId } = event.target.dataset;
       handlePostPreview(postId, state, updatePostClass);
@@ -50,17 +49,28 @@ function renderPosts(posts, container, state) {
   });
 }
 
+export function updatePostClass(postId) {
+  const postElement = document.querySelector(`button[data-post-id="${postId}"]`).closest('li');
+  const linkElement = postElement.querySelector('a');
+  if (linkElement) {
+    linkElement.classList.remove('fw-bold');
+    linkElement.classList.add('fw-normal');
+  }
+}
+
 function showSuccess(feedbackElement, inputElement, message) {
-  feedbackElement.textContent = i18next.t(message);
-  feedbackElement.classList.add('text-success');
-  feedbackElement.classList.remove('text-danger');
+  const feedback = feedbackElement;
+  feedback.textContent = i18next.t(message);
+  feedback.classList.add('text-success');
+  feedback.classList.remove('text-danger');
   inputElement.classList.remove('is-invalid');
 }
 
 function showError(feedbackElement, inputElement, message) {
-  feedbackElement.textContent = i18next.t(message);
-  feedbackElement.classList.add('text-danger');
-  feedbackElement.classList.remove('text-success');
+  const feedback = feedbackElement;
+  feedback.textContent = i18next.t(message);
+  feedback.classList.add('text-danger');
+  feedback.classList.remove('text-success');
   inputElement.classList.add('is-invalid');
 }
 
@@ -68,17 +78,6 @@ export function updateFeedback(message) {
   const feedbackElement = document.querySelector('.feedback');
   feedbackElement.textContent = message;
   feedbackElement.classList.toggle('hidden', !message);
-}
-
-export function updatePostClass(postId) {
-  const postElement = document
-    .querySelector(`button[data-post-id="${postId}"]`)
-    .closest('li');
-  const linkElement = postElement.querySelector('a');
-  if (linkElement) {
-    linkElement.classList.remove('fw-bold');
-    linkElement.classList.add('fw-normal');
-  }
 }
 
 export default function initView(state) {
@@ -93,9 +92,7 @@ export default function initView(state) {
       if (value === 'rss_added') {
         showSuccess(feedbackElement, inputElement, 'rss_added');
         const newFeed = state.feeds[state.feeds.length - 1];
-        const newPosts = state.posts.filter(
-          (post) => post.feedId === newFeed.id
-        );
+        const newPosts = state.posts.filter((post) => post.feedId === newFeed.id);
         renderFeed(newFeed, feedsContainer);
         renderPosts(newPosts, postsContainer, state);
         state.feedback = ''; // Очистка feedback после отображения
@@ -105,8 +102,9 @@ export default function initView(state) {
     }
   });
 
-  form.addEventListener('submit', (event) =>
-    handleRSSSubmit(event, watchedState, updateFeedback)
-  );
+  form.addEventListener('submit', (event) => {
+    handleRSSSubmit(event, watchedState, updateFeedback);
+  });
+
   return watchedState;
 }

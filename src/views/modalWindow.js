@@ -1,11 +1,5 @@
 import bootstrap from '../assets/bootstrap.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Обработчики для кнопок закрытия модального окна
-  document.querySelector('.btn-close').addEventListener('click', hideModal);
-  document.querySelector('.btn-secondary').addEventListener('click', hideModal);
-});
-
 export function showModal(title, description, link) {
   const modalElement = document.getElementById('modal');
   const modalTitle = modalElement.querySelector('.modal-title');
@@ -22,9 +16,14 @@ export function showModal(title, description, link) {
 
 export function hideModal() {
   const modalElement = document.getElementById('modal');
-
   const modal = bootstrap.Modal.getInstance(modalElement);
   if (modal) {
     modal.hide();
   }
 }
+
+// Перемещаем обработчики после объявления функции hideModal
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.btn-close').addEventListener('click', hideModal);
+  document.querySelector('.btn-secondary').addEventListener('click', hideModal);
+});
