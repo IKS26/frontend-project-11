@@ -33,7 +33,7 @@
 		 "error",
 		 "ignorePackages",
 		 {
-			"js": "never",
+			"js": "always",
 			"json": "always"
 		 }
 	  ],

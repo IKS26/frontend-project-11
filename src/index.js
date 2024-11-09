@@ -2,10 +2,10 @@ import './assets/style.css';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import { startRSSUpdates } from './controllers/rssController';
-import initView from './views/view';
-import './views/modal';
-import state from './models/model';
+import { startRSSUpdates } from './controllers/rssController.js';
+import initView from './views/view.js';
+import './views/modal.js';
+import state from './models/model.js';
 import en from './locales/en.json';
 import ru from './locales/ru.json';
 
@@ -37,7 +37,7 @@ if (!window.appInitialized) {
 // Поддержка HMR, чтобы избежать перезапуска всего приложения
 if (import.meta.webpackHot) {
   import.meta.webpackHot.accept(
-    ['./views/view', './controllers/rssController'],
+    ['./views/view.js', './controllers/rssController.js'], // Добавляем .js
     () => {
       console.log('HMR updating modules...');
 

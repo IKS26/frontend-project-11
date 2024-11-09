@@ -1,11 +1,10 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-import bootstrap from '../assets/bootstrap';
 import {
   handleRSSSubmit,
   handlePostPreview
-} from '../controllers/rssController';
+} from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
   container.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
@@ -46,7 +45,7 @@ function renderPosts(posts, container, state) {
   container.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
       const { postId } = event.target.dataset;
-      handlePostPreview(postId, state, showModal, updatePostClass);
+      handlePostPreview(postId, state, updatePostClass);
     });
   });
 }
@@ -69,29 +68,6 @@ export function updateFeedback(message) {
   const feedbackElement = document.querySelector('.feedback');
   feedbackElement.textContent = message;
   feedbackElement.classList.toggle('hidden', !message);
-}
-
-export function showModal(title, description, link) {
-  const modalElement = document.getElementById('modal');
-  const modalTitle = modalElement.querySelector('.modal-title');
-  const modalBody = modalElement.querySelector('.modal-body');
-  const fullArticleButton = modalElement.querySelector('.full-article');
-
-  modalTitle.textContent = title;
-  modalBody.textContent = description;
-  fullArticleButton.href = link;
-
-  const modal = new bootstrap.Modal(modalElement);
-  modal.show();
-}
-
-export function hideModal() {
-  const modalElement = document.getElementById('modal');
-
-  const modal = bootstrap.Modal.getInstance(modalElement);
-  if (modal) {
-    modal.hide();
-  }
 }
 
 export function updatePostClass(postId) {

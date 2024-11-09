@@ -1,8 +1,9 @@
 import i18next from 'i18next';
 
-import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils';
-import { validateRSS } from '../utils/validation';
-import { addRss, getPostById, markPostAsRead } from '../models/model';
+import validateRSS from '../utils/validation.js';
+import { showModal } from '../views/modal.js';
+import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils.js';
+import { addRss, getPostById, markPostAsRead } from '../models/model.js';
 
 export const handleRSSSubmit = async (event, state, updateFeedback) => {
   event.preventDefault();
@@ -41,7 +42,7 @@ export const startRSSUpdates = (state, addRss) => {
   updateRSSFeeds(state, onNewPosts);
 };
 
-export function handlePostPreview(postId, state, showModal, updatePostClass) {
+export function handlePostPreview(postId, state, updatePostClass) {
   const post = getPostById(postId, state);
 
   if (post) {
@@ -49,8 +50,4 @@ export function handlePostPreview(postId, state, showModal, updatePostClass) {
     showModal(post.title, post.description, post.link);
     updatePostClass(postId, state);
   }
-}
-
-export function closeModal(hideModal) {
-  hideModal();
 }
