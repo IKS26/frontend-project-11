@@ -1,4 +1,4 @@
-import { closeModal } from '../controllers/rssController.js';
+import { closeModal } from '../controllers/rssController';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Обработчики для кнопок закрытия модального окна

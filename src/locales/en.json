@@ -4,6 +4,6 @@
   "error_duplicate": "RSS already exists",
   "empty_field": "Field must not be empty",
   "invalid_rss": "The resource does not contain valid RSS",
-  "network_error": "Network error", 
+  "network_error": "Network error",
   "preview": "Preview"
 }

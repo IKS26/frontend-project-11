@@ -1,5 +1,5 @@
-import axios from 'axios';
 import i18next from 'i18next';
+import axios from 'axios';
 
 const POLL_INTERVAL = 5000;
 
@@ -34,7 +34,7 @@ export function parseRSS(data) {
         const items = Array.from(xml.querySelectorAll('item')).map((item) => ({
           title: item.querySelector('title').textContent,
           link: item.querySelector('link').textContent,
-          description: item.querySelector('description').textContent,
+          description: item.querySelector('description').textContent
         }));
         resolve({ title, description, items });
       } catch (error) {

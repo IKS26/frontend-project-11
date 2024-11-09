@@ -1,10 +1,11 @@
-import bootstrap from '../assets/bootstrap.js';
 import onChange from 'on-change';
 import i18next from 'i18next';
+
+import bootstrap from '../assets/bootstrap';
 import {
   handleRSSSubmit,
-  handlePostPreview,
-} from '../controllers/rssController.js';
+  handlePostPreview
+} from '../controllers/rssController';
 
 function renderFeed(feed, container) {
   container.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
@@ -44,8 +45,8 @@ function renderPosts(posts, container, state) {
 
   container.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
-      const postId = event.target.dataset.postId;
-      handlePostPreview(postId, state);
+      const { postId } = event.target.dataset;
+      handlePostPreview(postId, state, showModal, updatePostClass);
     });
   });
 }
@@ -129,7 +130,7 @@ export default function initView(state) {
   });
 
   form.addEventListener('submit', (event) =>
-    handleRSSSubmit(event, watchedState)
+    handleRSSSubmit(event, watchedState, updateFeedback)
   );
   return watchedState;
 }

@@ -1,15 +1,10 @@
-import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils.js';
-import { validateRSS } from '../utils/validation.js';
-import {
-  showModal,
-  hideModal,
-  updateFeedback,
-  updatePostClass,
-} from '../views/view.js';
-import { addRss, getPostById, markPostAsRead } from '../models/model.js';
 import i18next from 'i18next';
 
-export const handleRSSSubmit = async (event, state) => {
+import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils';
+import { validateRSS } from '../utils/validation';
+import { addRss, getPostById, markPostAsRead } from '../models/model';
+
+export const handleRSSSubmit = async (event, state, updateFeedback) => {
   event.preventDefault();
   const url = event.target.url.value.trim();
 
@@ -28,7 +23,8 @@ export const handleRSSSubmit = async (event, state) => {
     event.target.reset();
   } catch (err) {
     if (err.name === 'ValidationError') {
-      state.feedback = err.errors[0];
+      const [error] = err.errors;
+      state.feedback = error;
     } else if (err.message === 'network_error') {
       state.feedback = i18next.t('network_error');
     } else {
@@ -38,14 +34,14 @@ export const handleRSSSubmit = async (event, state) => {
   }
 };
 
-export const startRSSUpdates = (state) => {
+export const startRSSUpdates = (state, addRss) => {
   const onNewPosts = (feed, newPosts) => {
     addRss(feed, newPosts, state);
   };
   updateRSSFeeds(state, onNewPosts);
 };
 
-export function handlePostPreview(postId, state) {
+export function handlePostPreview(postId, state, showModal, updatePostClass) {
   const post = getPostById(postId, state);
 
   if (post) {
@@ -55,6 +51,6 @@ export function handlePostPreview(postId, state) {
   }
 }
 
-export function closeModal() {
+export function closeModal(hideModal) {
   hideModal();
 }

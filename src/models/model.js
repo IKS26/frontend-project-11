@@ -2,7 +2,7 @@ const state = {
   feeds: [], // Список RSS-лент
   posts: [], // Список постов
   readPosts: new Set(), // ID прочитанных постов
-  feedback: '', // Сообщения об ошибках или успехе
+  feedback: '' // Сообщения об ошибках или успехе
 };
 
 export function addRss(feed, posts, state) {
@@ -10,7 +10,7 @@ export function addRss(feed, posts, state) {
     state.feeds.push(feed);
     const postsWithId = posts.map((post, index) => ({
       ...post,
-      id: `${feed.id}-${index}`,
+      id: `${feed.id}-${index}`
     }));
     state.posts.push(...postsWithId);
     state.feedback = 'rss_added'; // Обновляем сразу

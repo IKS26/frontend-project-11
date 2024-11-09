@@ -4,6 +4,6 @@
   "error_duplicate": "RSS уже существует",
   "empty_field": "Не должно быть пустым",
   "invalid_rss": "Ресурс не содержит валидный RSS",
-  "network_error": "Ошибка сети", 
+  "network_error": "Ошибка сети",
   "preview": "Просмотр"
 }

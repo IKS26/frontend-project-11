@@ -8,7 +8,7 @@
     "lint": "eslint src/**/*.js",
     "lint-fix": "eslint src/**/*.js --fix",
     "format": "prettier --write \"src/**/*.{js,json,css}\"",
-	 "develop": "webpack serve",
+    "develop": "webpack serve",
     "build": "NODE_ENV=production webpack",
     "vercel-build": "npm run build && mv dist public"
   },

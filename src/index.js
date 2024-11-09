@@ -1,10 +1,11 @@
 import './assets/style.css';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import { startRSSUpdates } from './controllers/rssController.js';
-import initView from './views/view.js';
-import './views/modal.js';
-import state from './models/model.js';
+
+import { startRSSUpdates } from './controllers/rssController';
+import initView from './views/view';
+import './views/modal';
+import state from './models/model';
 import en from './locales/en.json';
 import ru from './locales/ru.json';
 
@@ -19,9 +20,9 @@ if (!window.appInitialized) {
     fallbackLng: 'en', // Язык, на который будет происходить откат, если перевод на русском недоступен
     resources: {
       en: { translation: en },
-      ru: { translation: ru },
+      ru: { translation: ru }
     },
-    debug: false,
+    debug: false
   });
 
   // Инициализация приложения
@@ -36,7 +37,7 @@ if (!window.appInitialized) {
 // Поддержка HMR, чтобы избежать перезапуска всего приложения
 if (import.meta.webpackHot) {
   import.meta.webpackHot.accept(
-    ['./views/view.js', './controllers/rssController.js'],
+    ['./views/view', './controllers/rssController'],
     () => {
       console.log('HMR updating modules...');
 
