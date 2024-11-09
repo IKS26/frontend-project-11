@@ -49,8 +49,8 @@ function renderPosts(posts, container, state) {
   });
 }
 
-function showSuccess(feedbackElement, inputElement) {
-  feedbackElement.textContent = i18next.t('rss_added');
+function showSuccess(feedbackElement, inputElement, message) {
+  feedbackElement.textContent = i18next.t(message);
   feedbackElement.classList.add('text-success');
   feedbackElement.classList.remove('text-danger');
   inputElement.classList.remove('is-invalid');
@@ -61,6 +61,12 @@ function showError(feedbackElement, inputElement, message) {
   feedbackElement.classList.add('text-danger');
   feedbackElement.classList.remove('text-success');
   inputElement.classList.add('is-invalid');
+}
+
+export function updateFeedback(message) {
+  const feedbackElement = document.querySelector('.feedback');
+  feedbackElement.textContent = message;
+  feedbackElement.classList.toggle('hidden', !message);
 }
 
 export function showModal(title, description, link) {
@@ -107,7 +113,7 @@ export default function initView(state) {
   const watchedState = onChange(state, (path, value) => {
     if (path === 'feedback') {
       if (value === 'rss_added') {
-        showSuccess(feedbackElement, inputElement);
+        showSuccess(feedbackElement, inputElement, 'rss_added');
         const newFeed = state.feeds[state.feeds.length - 1];
         const newPosts = state.posts.filter(
           (post) => post.feedId === newFeed.id
