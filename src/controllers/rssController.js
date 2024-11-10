@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable no-param-reassign */
 import i18next from 'i18next';
 
 import validateRSS from '../utils/validation.js';
@@ -17,11 +17,13 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
     .then((parsedData) => {
       const { title, description, items } = parsedData;
 
-      const feed = { id: Date.now(), url, title, description };
+      const feed = {
+        id: Date.now(), url, title, description,
+      };
       const posts = items.map((item, index) => ({
         ...item,
         feedId: feed.id,
-        id: `${feed.id}-${index}`
+        id: `${feed.id}-${index}`,
       }));
 
       addFeed(feed, posts, state);
@@ -31,12 +33,11 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
       event.target.reset();
     })
     .catch((err) => {
-      const feedbackMessage
-        = err.name === 'ValidationError'
-          ? err.errors[0]
-          : i18next.t(
-            err.message === 'network_error' ? 'network_error' : 'invalid_rss'
-          );
+      const feedbackMessage = err.name === 'ValidationError'
+        ? err.errors[0]
+        : i18next.t(
+          err.message === 'network_error' ? 'network_error' : 'invalid_rss',
+        );
       state.feedback = feedbackMessage;
       updateFeedback(feedbackMessage, true);
     });
@@ -51,4 +52,3 @@ export function handlePostPreview(postId, state, updatePostClass) {
     updatePostClass(postId);
   }
 }
-/* eslint-disable prettier/prettier */

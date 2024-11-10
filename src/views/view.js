@@ -3,21 +3,24 @@ import i18next from 'i18next';
 
 import {
   handleRSSSubmit,
-  handlePostPreview
+  handlePostPreview,
 } from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
+  const containerElement = container;
+  containerElement.innerHTML = '';
   const feedElement = document.createElement('li');
   feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
   feedElement.innerHTML = `
     <h3 class="h6 m-0">${feed.title}</h3>
     <p class="m-0 small text-black-50">${feed.description}</p>
   `;
-  container.appendChild(feedElement);
+  containerElement.appendChild(feedElement);
 }
 
 function renderPosts(posts, container, state) {
-  container.innerHTML = '';
+  const containerElement = container;
+  containerElement.innerHTML = '';
   posts.forEach((post) => {
     const postElement = document.createElement('li');
     postElement.classList.add(
@@ -26,7 +29,7 @@ function renderPosts(posts, container, state) {
       'justify-content-between',
       'align-items-start',
       'border-0',
-      'border-end-0'
+      'border-end-0',
     );
 
     const postClass = state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
@@ -35,12 +38,13 @@ function renderPosts(posts, container, state) {
       <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18next.t('preview')}</button>
     `;
 
-    container.appendChild(postElement);
+    containerElement.appendChild(postElement);
   });
 
   container.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
       const { postId } = event.target.dataset;
+      // eslint-disable-next-line no-use-before-define
       handlePostPreview(postId, state, updatePostClass);
     });
   });
@@ -80,21 +84,23 @@ export default function initView(state) {
   const postsContainer = document.querySelector('.posts .list-group');
 
   const watchedState = onChange(state, (path, value) => {
+    const newState = { ...state };
+
     if (path === 'feedback') {
       if (value === 'rss_added') {
         updateFeedback('rss_added', false);
-        const newFeed = state.feeds[state.feeds.length - 1];
-        const newPosts = state.posts.filter(
-          (post) => post.feedId === newFeed.id
+        const newFeed = newState.feeds[newState.feeds.length - 1];
+        const newPosts = newState.posts.filter(
+          (post) => post.feedId === newFeed.id,
         );
 
         renderFeed(newFeed, feedsContainer);
-        renderPosts(newPosts, postsContainer, state);
+        renderPosts(newPosts, postsContainer, newState);
 
-        state.feedback = '';
+        newState.feedback = '';
       } else {
         updateFeedback(value, true);
-        state.feedback = '';
+        newState.feedback = '';
       }
     }
   });

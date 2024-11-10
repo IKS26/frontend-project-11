@@ -2,7 +2,7 @@ const state = {
   feeds: [], // Список RSS-лент
   posts: [], // Список постов
   readPosts: new Set(), // ID прочитанных постов
-  feedback: '' // Сообщения об ошибках или успехе
+  feedback: '', // Сообщения об ошибках или успехе
 };
 
 export function addFeed(feed, posts, appState) {

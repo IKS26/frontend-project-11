@@ -6,7 +6,9 @@ import { startRSSUpdates } from './utils/rssUtils.js';
 import initView from './views/view.js';
 import './views/modalWindow.js';
 import state, { addFeed } from './models/model.js';
+// eslint-disable-next-line import/extensions
 import en from './locales/en.json';
+// eslint-disable-next-line import/extensions
 import ru from './locales/ru.json';
 
 // Проверка на инициализацию
@@ -20,9 +22,9 @@ if (!window.appInitialized) {
     fallbackLng: 'en', // Язык, на который будет происходить откат, если перевод на русском недоступен
     resources: {
       en: { translation: en },
-      ru: { translation: ru }
+      ru: { translation: ru },
     },
-    debug: false
+    debug: false,
   });
 
   // Инициализация приложения
@@ -44,6 +46,6 @@ if (import.meta.webpackHot) {
       // Повторно вызываем только обновленные модули
       initView(state);
       startRSSUpdates(state);
-    }
+    },
   );
 }

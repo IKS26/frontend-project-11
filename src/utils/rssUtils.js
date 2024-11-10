@@ -26,7 +26,7 @@ export function parseRSS(data) {
   const items = Array.from(xml.querySelectorAll('item')).map((item) => ({
     title: item.querySelector('title').textContent,
     link: item.querySelector('link').textContent,
-    description: item.querySelector('description').textContent
+    description: item.querySelector('description').textContent,
   }));
 
   return { title, description, items };
@@ -34,26 +34,22 @@ export function parseRSS(data) {
 
 export function updateRSSFeeds(state, onNewPosts) {
   console.log('Updating RSS Feeds...'); // Отладочное сообщение
-  const updatePromises = state.feeds.map((feed) =>
-    loadRSS(feed.url)
-      .then(parseRSS)
-      .then((parsedData) => {
-        const existingPostsLinks = new Set(
-          state.posts.map((post) => post.link)
-        );
-        const newPosts = parsedData.items.filter(
-          (item) => !existingPostsLinks.has(item.link)
-        );
+  const updatePromises = state.feeds.map((feed) => loadRSS(feed.url)
+    .then(parseRSS)
+    .then((parsedData) => {
+      const existingPostsLinks = new Set(
+        state.posts.map((post) => post.link),
+      );
+      const newPosts = parsedData.items.filter(
+        (item) => !existingPostsLinks.has(item.link),
+      );
 
-        if (newPosts.length > 0) {
-          const posts = newPosts.map((item) => ({ ...item, feedId: feed.id }));
-          onNewPosts(feed, posts);
-        }
-      })
-      .catch((error) =>
-        console.error(`Failed to update feed ${feed.url}:`, error)
-      )
-  );
+      if (newPosts.length > 0) {
+        const posts = newPosts.map((item) => ({ ...item, feedId: feed.id }));
+        onNewPosts(feed, posts);
+      }
+    })
+    .catch((error) => console.error(`Failed to update feed ${feed.url}:`, error)));
 
   Promise.all(updatePromises).then(() => {
     setTimeout(() => updateRSSFeeds(state, onNewPosts), POLL_INTERVAL);
