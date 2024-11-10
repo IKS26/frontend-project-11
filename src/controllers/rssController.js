@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import i18next from 'i18next';
 
 import validateRSS from '../utils/validation.js';
@@ -7,7 +8,7 @@ import { addFeed, getPostById, markPostAsRead } from '../models/model.js';
 
 export const handleRSSSubmit = (event, state, updateFeedback) => {
   event.preventDefault();
-  const url = event.target.elements['url'].value.trim();
+  const url = event.target.elements.url.value.trim();
 
   validateRSS(state.feeds)
     .validate(url)
@@ -30,12 +31,12 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
       event.target.reset();
     })
     .catch((err) => {
-      const feedbackMessage =
-        err.name === 'ValidationError'
+      const feedbackMessage
+        = err.name === 'ValidationError'
           ? err.errors[0]
           : i18next.t(
-              err.message === 'network_error' ? 'network_error' : 'invalid_rss'
-            );
+            err.message === 'network_error' ? 'network_error' : 'invalid_rss'
+          );
       state.feedback = feedbackMessage;
       updateFeedback(feedbackMessage, true);
     });
@@ -50,3 +51,4 @@ export function handlePostPreview(postId, state, updatePostClass) {
     updatePostClass(postId);
   }
 }
+/* eslint-disable prettier/prettier */

@@ -38,8 +38,11 @@
       }
     ],
     "comma-dangle": ["error", "never"],
-    "implicit-arrow-linebreak": "off", // Отключаем, чтобы избежать конфликта с Prettier
-    "function-paren-newline": "off" // Отключаем для согласованности с Prettier
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off",
+    "dot-notation": "off",
+    "operator-linebreak": ["error", "before"],
+    "no-use-before-define": ["error", { "functions": false, "classes": true }]
   },
   "settings": {
     "import/resolver": {
