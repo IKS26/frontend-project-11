@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import i18next from 'i18next';
 
 import validateRSS from '../utils/validation.js';
@@ -27,6 +26,7 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
       }));
 
       addFeed(feed, posts, state);
+      // eslint-disable-next-line no-param-reassign
       state.feedback = 'rss_added';
       updateFeedback('rss_added', false);
 
@@ -38,6 +38,7 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
         : i18next.t(
           err.message === 'network_error' ? 'network_error' : 'invalid_rss',
         );
+      // eslint-disable-next-line no-param-reassign
       state.feedback = feedbackMessage;
       updateFeedback(feedbackMessage, true);
     });

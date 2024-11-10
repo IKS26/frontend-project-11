@@ -5,17 +5,17 @@ const state = {
   feedback: '', // Сообщения об ошибках или успехе
 };
 
-export function addFeed(feed, posts, appState) {
-  appState.feeds.push(feed);
-  appState.posts.push(...posts);
+export function addFeed(feed, posts) {
+  state.feeds.push(feed);
+  state.posts.push(...posts);
 }
 
-export function getPostById(postId, appState) {
-  return appState.posts.find((post) => post.id === postId);
+export function getPostById(postId) {
+  return state.posts.find((post) => post.id === postId);
 }
 
-export function markPostAsRead(postId, appState) {
-  appState.readPosts.add(postId);
+export function markPostAsRead(postId) {
+  state.readPosts.add(postId);
 }
 
 export default state;
