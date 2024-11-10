@@ -18,7 +18,7 @@ This application was developed as part of the Hexlet Frontend Development course
 
 ## Interface Example
 
-![RSS-Reader Interface](./assets/RSS-Reader.Interface.png)
+![RSS-Reader Interface](./src/assets/RSS-Reader.Interface.png)
 
 ## Features
 
