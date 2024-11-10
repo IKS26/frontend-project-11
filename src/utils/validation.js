@@ -3,11 +3,11 @@ import i18next from 'i18next';
 
 yup.setLocale({
   string: {
-    url: () => i18next.t('error_invalid_url'),
+    url: () => i18next.t('error_invalid_url')
   },
   mixed: {
-    notOneOf: () => i18next.t('error_duplicate'),
-  },
+    notOneOf: () => i18next.t('error_duplicate')
+  }
 });
 
 export default function validateRSS(existingFeeds) {

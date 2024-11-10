@@ -2,52 +2,43 @@ import i18next from 'i18next';
 
 import validateRSS from '../utils/validation.js';
 import { showModal } from '../views/modalWindow.js';
-import { loadRSS, parseRSS, updateRSSFeeds } from '../utils/rssUtils.js';
+import { loadRSS, parseRSS } from '../utils/rssUtils.js';
 import { addFeed, getPostById, markPostAsRead } from '../models/model.js';
 
-export const handleRSSSubmit = async (event, state, updateFeedback) => {
+export const handleRSSSubmit = (event, state, updateFeedback) => {
   event.preventDefault();
-  const url = event.target.url.value.trim();
-  const newState = { ...state }; // Копируем объект состояния для изменения
+  const url = event.target.elements['url'].value.trim();
 
-  try {
-    const validUrl = await validateRSS(newState.feeds).validate(url);
-    const data = await loadRSS(validUrl);
-    const parsedData = await parseRSS(data);
-    const {
-      title,
-      description,
-      items,
-    } = parsedData;
+  validateRSS(state.feeds)
+    .validate(url)
+    .then((validUrl) => loadRSS(validUrl))
+    .then((data) => parseRSS(data))
+    .then((parsedData) => {
+      const { title, description, items } = parsedData;
 
-    const feed = { id: Date.now(), url, title, description };
-    const posts = items.map((item) => ({
-      ...item,
-      feedId: feed.id,
-    }));
+      const feed = { id: Date.now(), url, title, description };
+      const posts = items.map((item, index) => ({
+        ...item,
+        feedId: feed.id,
+        id: `${feed.id}-${index}`
+      }));
 
-    addFeed(feed, posts, newState);
-    newState.feedback = 'rss_added';
+      addFeed(feed, posts, state);
+      state.feedback = 'rss_added';
+      updateFeedback('rss_added', false);
 
-    event.target.reset();
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      const [error] = err.errors;
-      newState.feedback = error;
-    } else if (err.message === 'network_error') {
-      newState.feedback = i18next.t('network_error');
-    } else {
-      newState.feedback = i18next.t('invalid_rss');
-    }
-    updateFeedback(newState.feedback);
-  }
-};
-
-export const startRSSUpdates = (state, addRssToState) => {
-  const onNewPosts = (feed, newPosts) => {
-    addRssToState(feed, newPosts, state);
-  };
-  updateRSSFeeds(state, onNewPosts);
+      event.target.reset();
+    })
+    .catch((err) => {
+      const feedbackMessage =
+        err.name === 'ValidationError'
+          ? err.errors[0]
+          : i18next.t(
+              err.message === 'network_error' ? 'network_error' : 'invalid_rss'
+            );
+      state.feedback = feedbackMessage;
+      updateFeedback(feedbackMessage, true);
+    });
 };
 
 export function handlePostPreview(postId, state, updatePostClass) {
@@ -56,6 +47,6 @@ export function handlePostPreview(postId, state, updatePostClass) {
   if (post) {
     markPostAsRead(postId, state);
     showModal(post.title, post.description, post.link);
-    updatePostClass(postId, state);
+    updatePostClass(postId);
   }
 }

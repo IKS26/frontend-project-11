@@ -2,12 +2,12 @@ import './assets/style.css';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-import { startRSSUpdates } from './controllers/rssController.js';
+import { startRSSUpdates } from './utils/rssUtils.js';
 import initView from './views/view.js';
 import './views/modalWindow.js';
-import state from './models/model.js';
-import en from './locales/en';
-import ru from './locales/ru';
+import state, { addFeed } from './models/model.js';
+import en from './locales/en.json';
+import ru from './locales/ru.json';
 
 // Проверка на инициализацию
 if (!window.appInitialized) {
@@ -20,16 +20,16 @@ if (!window.appInitialized) {
     fallbackLng: 'en', // Язык, на который будет происходить откат, если перевод на русском недоступен
     resources: {
       en: { translation: en },
-      ru: { translation: ru },
+      ru: { translation: ru }
     },
-    debug: false,
+    debug: false
   });
 
   // Инициализация приложения
   initView(state);
 
   // Запуск регулярного обновления RSS-лент
-  startRSSUpdates(state);
+  startRSSUpdates(state, addFeed);
 } else {
   console.log('App is already initialized');
 }
@@ -44,6 +44,6 @@ if (import.meta.webpackHot) {
       // Повторно вызываем только обновленные модули
       initView(state);
       startRSSUpdates(state);
-    },
+    }
   );
 }

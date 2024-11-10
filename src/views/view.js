@@ -1,25 +1,23 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-import { handleRSSSubmit, handlePostPreview } from '../controllers/rssController.js';
+import {
+  handleRSSSubmit,
+  handlePostPreview
+} from '../controllers/rssController.js';
 
 function renderFeed(feed, container) {
-  const containerElement = container;
-  containerElement.innerHTML = ''; // Очистка контейнера перед рендерингом новых фидов
   const feedElement = document.createElement('li');
   feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
-
   feedElement.innerHTML = `
     <h3 class="h6 m-0">${feed.title}</h3>
     <p class="m-0 small text-black-50">${feed.description}</p>
   `;
-  containerElement.appendChild(feedElement);
+  container.appendChild(feedElement);
 }
 
 function renderPosts(posts, container, state) {
-  const containerElement = container;
-  containerElement.innerHTML = ''; // Очистка контейнера перед рендерингом новых постов
-
+  container.innerHTML = '';
   posts.forEach((post) => {
     const postElement = document.createElement('li');
     postElement.classList.add(
@@ -32,16 +30,15 @@ function renderPosts(posts, container, state) {
     );
 
     const postClass = state.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
-
     postElement.innerHTML = `
       <a href="${post.link}" class="${postClass}" data-id="${post.feedId}" target="_blank" rel="noopener noreferrer">${post.title}</a>
       <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18next.t('preview')}</button>
     `;
 
-    containerElement.appendChild(postElement);
+    container.appendChild(postElement);
   });
 
-  containerElement.querySelectorAll('.post-preview').forEach((button) => {
+  container.querySelectorAll('.post-preview').forEach((button) => {
     button.addEventListener('click', (event) => {
       const { postId } = event.target.dataset;
       handlePostPreview(postId, state, updatePostClass);
@@ -50,61 +47,60 @@ function renderPosts(posts, container, state) {
 }
 
 export function updatePostClass(postId) {
-  const postElement = document.querySelector(`button[data-post-id="${postId}"]`).closest('li');
-  const linkElement = postElement.querySelector('a');
-  if (linkElement) {
-    linkElement.classList.remove('fw-bold');
-    linkElement.classList.add('fw-normal');
+  const postElement = document
+    .querySelector(`button[data-post-id="${postId}"]`)
+    .closest('li');
+  if (postElement) {
+    postElement.querySelector('a').classList.replace('fw-bold', 'fw-normal');
   }
 }
 
-function showSuccess(feedbackElement, inputElement, message) {
-  const feedback = feedbackElement;
-  feedback.textContent = i18next.t(message);
-  feedback.classList.add('text-success');
-  feedback.classList.remove('text-danger');
-  inputElement.classList.remove('is-invalid');
-}
-
-function showError(feedbackElement, inputElement, message) {
-  const feedback = feedbackElement;
-  feedback.textContent = i18next.t(message);
-  feedback.classList.add('text-danger');
-  feedback.classList.remove('text-success');
-  inputElement.classList.add('is-invalid');
-}
-
-export function updateFeedback(message) {
+export function updateFeedback(message, isError = false) {
   const feedbackElement = document.querySelector('.feedback');
-  feedbackElement.textContent = message;
+  const inputElement = document.getElementById('url-input');
+
+  feedbackElement.textContent = i18next.t(message);
   feedbackElement.classList.toggle('hidden', !message);
+
+  // Удаляем все классы, кроме класса 'feedback'
+  feedbackElement.className = 'feedback';
+  inputElement.classList.remove('is-invalid');
+
+  if (isError) {
+    feedbackElement.classList.add('text-danger');
+    inputElement.classList.add('is-invalid');
+  } else {
+    feedbackElement.classList.add('text-success');
+  }
 }
 
 export default function initView(state) {
   const form = document.querySelector('.rss-form');
-  const feedbackElement = document.querySelector('.feedback');
-  const inputElement = document.getElementById('url-input');
   const feedsContainer = document.querySelector('.feeds .list-group');
   const postsContainer = document.querySelector('.posts .list-group');
 
   const watchedState = onChange(state, (path, value) => {
     if (path === 'feedback') {
       if (value === 'rss_added') {
-        showSuccess(feedbackElement, inputElement, 'rss_added');
+        updateFeedback('rss_added', false);
         const newFeed = state.feeds[state.feeds.length - 1];
-        const newPosts = state.posts.filter((post) => post.feedId === newFeed.id);
+        const newPosts = state.posts.filter(
+          (post) => post.feedId === newFeed.id
+        );
+
         renderFeed(newFeed, feedsContainer);
         renderPosts(newPosts, postsContainer, state);
-        state.feedback = ''; // Очистка feedback после отображения
+
+        state.feedback = '';
       } else {
-        showError(feedbackElement, inputElement, value);
+        updateFeedback(value, true);
+        state.feedback = '';
       }
     }
   });
 
   form.addEventListener('submit', (event) => {
+    console.log('Форма отправлена');
     handleRSSSubmit(event, watchedState, updateFeedback);
   });
-
-  return watchedState;
 }
