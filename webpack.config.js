@@ -16,7 +16,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html', // путь к шаблону
+      template: './index.html',
       filename: 'index.html',
     }),
     new MiniCssExtractPlugin(),

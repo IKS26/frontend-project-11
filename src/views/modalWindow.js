@@ -22,7 +22,6 @@ export function hideModal() {
   }
 }
 
-// Перемещаем обработчики после объявления функции hideModal
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.btn-close').addEventListener('click', hideModal);
   document.querySelector('.btn-secondary').addEventListener('click', hideModal);

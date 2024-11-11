@@ -33,7 +33,6 @@ export function parseRSS(data) {
 }
 
 export function updateRSSFeeds(state, onNewPosts) {
-  console.log('Updating RSS Feeds...'); // Отладочное сообщение
   const updatePromises = state.feeds.map((feed) => loadRSS(feed.url)
     .then(parseRSS)
     .then((parsedData) => {

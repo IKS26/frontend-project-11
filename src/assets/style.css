@@ -1,8 +1,8 @@
 .modal-header {
   display: flex;
-  align-items: center; /* Выравниваем элементы по верхнему краю */
+  align-items: center;
   justify-content: space-between;
-  position: relative; /* Устанавливаем позиционирование для родительского элемента */
+  position: relative;
 }
 
 .modal-title {

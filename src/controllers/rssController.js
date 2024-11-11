@@ -17,7 +17,10 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
       const { title, description, items } = parsedData;
 
       const feed = {
-        id: Date.now(), url, title, description,
+        id: Date.now(),
+        url,
+        title,
+        description,
       };
       const posts = items.map((item, index) => ({
         ...item,
