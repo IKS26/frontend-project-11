@@ -1,21 +1,20 @@
 const state = {
-  feeds: [], // Список RSS-лент
-  posts: [], // Список постов
-  readPosts: new Set(), // ID прочитанных постов
-  feedback: '', // Сообщения об ошибках или успехе
+  feeds: [],
+  posts: [],
+  readPosts: new Set(),
+  feedback: '',
+  feedbackType: null,
 };
 
-export function addFeed(feed, posts) {
-  state.feeds.push(feed);
-  state.posts.push(...posts);
-}
+export const addFeed = (feed, posts, watchState) => {
+  watchState.feeds.push(feed);
+  watchState.posts.unshift(...posts);
+};
 
-export function getPostById(postId) {
-  return state.posts.find((post) => post.id === postId);
-}
+export const getPostById = (postId) => state.posts.find((post) => post.id === postId);
 
-export function markPostAsRead(postId) {
+export const markPostAsRead = (postId) => {
   state.readPosts.add(postId);
-}
+};
 
 export default state;

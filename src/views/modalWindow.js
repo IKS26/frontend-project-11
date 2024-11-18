@@ -1,6 +1,8 @@
 import bootstrap from '../assets/bootstrap.js';
 
-export function showModal(title, description, link) {
+let modalInstance;
+
+const showModal = (title, description, link) => {
   const modalElement = document.getElementById('modal');
   const modalTitle = modalElement.querySelector('.modal-title');
   const modalBody = modalElement.querySelector('.modal-body');
@@ -10,19 +12,11 @@ export function showModal(title, description, link) {
   modalBody.textContent = description;
   fullArticleButton.href = link;
 
-  const modal = new bootstrap.Modal(modalElement);
-  modal.show();
-}
-
-export function hideModal() {
-  const modalElement = document.getElementById('modal');
-  const modal = bootstrap.Modal.getInstance(modalElement);
-  if (modal) {
-    modal.hide();
+  if (!modalInstance) {
+    modalInstance = new bootstrap.Modal(modalElement);
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelector('.btn-close').addEventListener('click', hideModal);
-  document.querySelector('.btn-secondary').addEventListener('click', hideModal);
-});
+  modalInstance.show();
+};
+
+export default showModal;

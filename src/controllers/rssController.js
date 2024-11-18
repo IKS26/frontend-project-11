@@ -1,18 +1,32 @@
-import i18next from 'i18next';
-
-import validateRSS from '../utils/validation.js';
-import { showModal } from '../views/modalWindow.js';
+import showModal from '../views/modalWindow.js';
+import { validateRSS } from '../utils/validation.js';
 import { loadRSS, parseRSS } from '../utils/rssUtils.js';
 import { addFeed, getPostById, markPostAsRead } from '../models/model.js';
 
-export const handleRSSSubmit = (event, state, updateFeedback) => {
+export const handleRSSSubmit = (
+  event,
+  watchedState,
+  setState,
+  i18nextInstance,
+) => {
   event.preventDefault();
-  const url = event.target.elements.url.value.trim();
+  const form = event.target;
+  const urlInput = form.elements.url;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const url = urlInput.value.trim();
 
-  validateRSS(state.feeds)
+  urlInput.disabled = true;
+  submitButton.disabled = true;
+
+  setState({ feedback: '', feedbackType: null });
+  urlInput.classList.add('form-control');
+
+  const currentFeeds = watchedState.feeds;
+
+  validateRSS(currentFeeds)
     .validate(url)
-    .then((validUrl) => loadRSS(validUrl))
-    .then((data) => parseRSS(data))
+    .then(loadRSS)
+    .then(parseRSS)
     .then((parsedData) => {
       const { title, description, items } = parsedData;
 
@@ -22,37 +36,69 @@ export const handleRSSSubmit = (event, state, updateFeedback) => {
         title,
         description,
       };
-      const posts = items.map((item, index) => ({
+
+      const posts = items.map((item) => ({
         ...item,
         feedId: feed.id,
-        id: `${feed.id}-${index}`,
+        id: `${feed.id}-${item.link}`,
       }));
 
-      addFeed(feed, posts, state);
-      // eslint-disable-next-line no-param-reassign
-      state.feedback = 'rss_added';
-      updateFeedback('rss_added', false);
+      addFeed(feed, posts, watchedState);
 
-      event.target.reset();
+      setState({
+        feedback: i18nextInstance.t('rss_added'),
+        feedbackType: 'success',
+      });
+      urlInput.classList.remove('is-invalid');
+      form.reset();
     })
     .catch((err) => {
-      const feedbackMessage = err.name === 'ValidationError'
+      const feedback = err.name === 'ValidationError'
         ? err.errors[0]
-        : i18next.t(
+        : i18nextInstance.t(
           err.message === 'network_error' ? 'network_error' : 'invalid_rss',
         );
-      // eslint-disable-next-line no-param-reassign
-      state.feedback = feedbackMessage;
-      updateFeedback(feedbackMessage, true);
+      setState({ feedback, feedbackType: 'error' });
+      urlInput.classList.add('is-invalid');
+    })
+    .finally(() => {
+      urlInput.disabled = false;
+      submitButton.disabled = false;
     });
 };
 
-export function handlePostPreview(postId, state, updatePostClass) {
-  const post = getPostById(postId, state);
+export const initFormListener = (
+  form,
+  watchedState,
+  setState,
+  i18nextInstance,
+) => {
+  form.addEventListener('submit', (event) => handleRSSSubmit(event, watchedState, setState, i18nextInstance));
+};
 
+const updatePostClass = (postId) => {
+  const postElement = document
+    .querySelector(`button[data-post-id="${postId}"]`)
+    .closest('li');
+  if (postElement) {
+    postElement.querySelector('a').classList.replace('fw-bold', 'fw-normal');
+  }
+};
+
+export const handlePostPreview = (postId) => {
+  const post = getPostById(postId);
   if (post) {
-    markPostAsRead(postId, state);
+    markPostAsRead(postId);
     showModal(post.title, post.description, post.link);
     updatePostClass(postId);
   }
-}
+};
+
+export const attachPostPreviewListener = () => {
+  document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('post-preview')) {
+      const { postId } = event.target.dataset;
+      handlePostPreview(postId);
+    }
+  });
+};
