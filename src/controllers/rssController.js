@@ -2,6 +2,7 @@ import showModal from '../views/modalWindow.js';
 import { validateRSS } from '../utils/validation.js';
 import { loadRSS, parseRSS } from '../utils/rssUtils.js';
 import { addFeed, getPostById, markPostAsRead } from '../models/model.js';
+import { forceRenderFeedback } from '../views/view.js';
 
 export const handleRSSSubmit = (
   event,
@@ -49,6 +50,7 @@ export const handleRSSSubmit = (
         feedback: i18nextInstance.t('rss_added'),
         feedbackType: 'success',
       });
+      forceRenderFeedback(watchedState);
       urlInput.classList.remove('is-invalid');
       form.reset();
     })
@@ -59,6 +61,7 @@ export const handleRSSSubmit = (
           err.message === 'network_error' ? 'network_error' : 'invalid_rss',
         );
       setState({ feedback, feedbackType: 'error' });
+      forceRenderFeedback(watchedState);
       urlInput.classList.add('is-invalid');
     })
     .finally(() => {

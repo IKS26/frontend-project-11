@@ -6,6 +6,12 @@ const state = {
   feedbackType: null,
 };
 
+export const getState = () => state;
+
+export const setState = (newState) => {
+  Object.assign(state, newState);
+};
+
 export const addFeed = (feed, posts, watchState) => {
   watchState.feeds.push(feed);
   watchState.posts.unshift(...posts);

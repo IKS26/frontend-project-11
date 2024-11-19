@@ -31,9 +31,7 @@ export const renderPosts = (posts, state, i18nextInstance) => {
   const sortedPosts = [...posts].reverse();
 
   sortedPosts.forEach((post) => {
-    const existingPost = postsContainer.querySelector(
-      `button[data-post-id="${post.id}"]`,
-    );
+    const existingPost = postsContainer.querySelector(`button[data-post-id="${post.id}"]`);
     if (existingPost) return;
 
     const postElement = document.createElement('li');
@@ -57,28 +55,16 @@ export const renderPosts = (posts, state, i18nextInstance) => {
 };
 
 const renderFeedback = (feedback, feedbackElement, type = 'success') => {
-  if (!feedback) {
-    // eslint-disable-next-line no-param-reassign
-    feedbackElement.textContent = '';
-    feedbackElement.classList.add('d-none');
-    feedbackElement.classList.remove('text-danger', 'text-success');
-    return;
-  }
-
   // eslint-disable-next-line no-param-reassign
-  feedbackElement.textContent = feedback;
-  feedbackElement.classList.remove('d-none', 'text-danger', 'text-success');
-
-  if (type === 'success') {
-    feedbackElement.classList.add('text-success');
-  } else {
-    feedbackElement.classList.add('text-danger');
-  }
+  feedbackElement.textContent = feedback || '';
+  feedbackElement.classList.toggle('d-none', !feedback);
+  feedbackElement.classList.toggle('text-danger', type !== 'success');
+  feedbackElement.classList.toggle('text-success', type === 'success');
 };
 
-const forceRenderFeedback = (state) => {
+export const forceRenderFeedback = (state) => {
   const feedbackElement = document.querySelector('.feedback');
-  const feedbackType = state.feedbackType || 'error'; // Добавим значение по умолчанию
+  const feedbackType = state.feedbackType || 'error';
   renderFeedback(state.feedback, feedbackElement, feedbackType);
 };
 
@@ -87,8 +73,6 @@ export default (state, i18nextInstance) => {
   const feedbackElement = document.querySelector('.feedback');
 
   const watchedState = onChange(state, (path, value) => {
-    console.log(`State updated: ${path}`, value);
-
     if (path === 'feeds') {
       const newFeed = state.feeds[state.feeds.length - 1];
       renderFeed(newFeed, feedsContainer);
@@ -103,11 +87,5 @@ export default (state, i18nextInstance) => {
     }
   });
 
-  const setState = (newState) => {
-    Object.assign(state, newState);
-    watchedState.feedback = state.feedback; // Принудительное обновление состояния
-    forceRenderFeedback(state); // Принудительный вызов рендеринга
-  };
-
-  return { watchedState, setState };
+  return { watchedState };
 };

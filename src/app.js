@@ -1,9 +1,9 @@
 import i18next from 'i18next';
 import './assets/style.css';
-import state from './models/model.js';
 import initView from './views/view.js';
 import resources from './locales/index.js';
 import { startAutoUpdate } from './utils/rssUtils.js';
+import { getState, setState } from './models/model.js';
 import { configureValidation } from './utils/validation.js';
 import {
   initFormListener,
@@ -23,9 +23,9 @@ const initApp = () => {
     .then(() => {
       configureValidation(i18nextInstance);
 
+      const state = getState();
       const form = document.querySelector('.rss-form');
-
-      const { watchedState, setState } = initView(state, i18nextInstance);
+      const { watchedState } = initView(state, i18nextInstance);
 
       initFormListener(form, watchedState, setState, i18nextInstance);
       attachPostPreviewListener();
