@@ -1,19 +1,16 @@
 import i18next from 'i18next';
 import './assets/style.css';
+import getState from './models/model.js';
 import initView from './views/view.js';
 import resources from './locales/index.js';
-import { startAutoUpdate } from './utils/rssUtils.js';
-import { getState, setState } from './models/model.js';
-import { configureValidation } from './utils/validation.js';
-import {
-  initFormListener,
-  attachPostPreviewListener,
-} from './controllers/rssController.js';
+import startFeedsAutoUpdate from './controllers/updateFeeds.js';
+import initPostPreviewListener from './views/handlePostPreview.js';
+import initFormSubmitListener from './controllers/handleFormSubmit.js';
 
-const initApp = () => {
+const runApp = () => {
   const i18nextInstance = i18next.createInstance();
 
-  return i18nextInstance
+  i18nextInstance
     .init({
       lng: 'ru',
       fallbackLng: 'en',
@@ -21,20 +18,17 @@ const initApp = () => {
       debug: false,
     })
     .then(() => {
-      configureValidation(i18nextInstance);
-
       const state = getState();
-      const form = document.querySelector('.rss-form');
-      const { watchedState } = initView(state, i18nextInstance);
+      const watchedState = initView(state, i18nextInstance);
 
-      initFormListener(form, watchedState, setState, i18nextInstance);
-      attachPostPreviewListener();
+      initFormSubmitListener(watchedState, i18nextInstance);
+      initPostPreviewListener();
 
-      startAutoUpdate(watchedState, setState, i18nextInstance);
+      startFeedsAutoUpdate(watchedState, i18nextInstance);
     })
-    .catch((err) => {
-      console.error('Error initializing app:', err);
+    .catch((error) => {
+      console.error('Error initializing app:', error);
     });
 };
 
-export default initApp;
+export default runApp;

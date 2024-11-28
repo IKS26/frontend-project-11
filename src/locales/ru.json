@@ -1,8 +1,8 @@
 {
-  "rss_added": "RSS успешно загружен",
+  "empty_field": "Не должно быть пустым",
   "error_invalid_url": "Ссылка должна быть валидным URL",
   "error_duplicate": "RSS уже существует",
-  "empty_field": "Не должно быть пустым",
+  "rss_added": "RSS успешно загружен",
   "invalid_rss": "Ресурс не содержит валидный RSS",
   "network_error": "Ошибка сети",
   "preview": "Просмотр"

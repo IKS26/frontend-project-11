@@ -1,6 +1,5 @@
-// eslint-disable-next-line import/extensions
+/* eslint-disable import/extensions */
 import en from './en.json';
-// eslint-disable-next-line import/extensions
 import ru from './ru.json';
 
 const resources = {

@@ -1,8 +1,8 @@
 {
-  "rss_added": "RSS loaded successfully",
+  "empty_field": "Field must not be empty",
   "error_invalid_url": "The link must be a valid URL",
   "error_duplicate": "RSS already exists",
-  "empty_field": "Field must not be empty",
+  "rss_added": "RSS loaded successfully",
   "invalid_rss": "The resource does not contain valid RSS",
   "network_error": "Network error",
   "preview": "Preview"
