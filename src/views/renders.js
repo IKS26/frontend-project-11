@@ -48,7 +48,7 @@ export const renderPosts = (posts, state, i18nextInstance) => {
 
     const postClass = state.ui.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
     postElement.innerHTML = `
-      <a href="${post.link}" class="${postClass} px-2" target="_blank" rel="noopener noreferrer">${post.title}</a>
+      <a href="${post.link}" class="${postClass}" target="_blank" rel="noopener noreferrer">${post.title}</a>
       <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18nextInstance.t('preview')}</button>
     `;
 
