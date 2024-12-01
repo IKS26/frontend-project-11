@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
 import i18next from 'i18next';
-import initView, { renderPosts, renderModal } from './view.js';
+import initView, { renderModal } from './view.js';
 import parseRss from './parser.js';
 import resources from './locales/index.js';
 import customLocale from './locales/customLocale.js';
@@ -212,7 +212,6 @@ const init = () => {
               }));
 
             watchedState.posts = [...newPosts, ...posts];
-            renderPosts(watchedState.posts, watchedState, i18nextInstance);
           })
           .catch((error) => {
             console.error('Error updating feed:', error);
