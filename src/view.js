@@ -53,6 +53,7 @@ const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
       break;
     case 'success':
       formControl.enable(inputField, addButton);
+      inputField.classList.remove('border-danger');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
       feedback.textContent = loadingProcess.error;
@@ -60,8 +61,10 @@ const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
       break;
     case 'fail':
       formControl.enable(inputField, addButton);
-      updateFormState(form, domElements, i18nextInstance, false);
+      feedback.classList.remove('text-success');
+      feedback.classList.add('text-danger');
       inputField.classList.add('border-danger');
+      feedback.textContent = loadingProcess.error;
       break;
     default:
       console.error(`Unknown loading process state: ${loadingProcess.status}`);
