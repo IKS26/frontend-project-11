@@ -30,7 +30,7 @@ const handleLoadingProcessError = (error, i18nextInstance) => {
   if (!error) {
     return i18nextInstance.t('rss_added');
   }
-  return error.message === 'network_error'
+  return error.message === 'Network Error'
     ? i18nextInstance.t('network_error')
     : i18nextInstance.t('invalid_rss');
 };
@@ -67,6 +67,7 @@ const loadRss = (url, watchedState, i18nextInstance) => {
       );
     })
     .catch((error) => {
+      console.error('Error loading RSS:', error);
       watchedState.loadingProcess.status = 'fail';
       watchedState.loadingProcess.error = handleLoadingProcessError(
         error,
