@@ -4,7 +4,9 @@ const parseRss = (data) => {
   const parseError = xml.querySelector('parsererror');
 
   if (parseError) {
-    throw new Error('parsing_error');
+    const error = new Error('rss_error');
+    error.isParserError = true;
+    throw error;
   }
 
   const title = xml.querySelector('channel > title').textContent;

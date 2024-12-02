@@ -3,7 +3,8 @@
   "error_invalid_url": "The link must be a valid URL",
   "error_duplicate": "RSS already exists",
   "rss_added": "RSS loaded successfully",
-  "invalid_rss": "The resource does not contain valid RSS",
+  "rss_error": "The resource does not contain valid RSS",
   "network_error": "Network error",
+  "unknown_error": "Unknown error",
   "preview": "Preview"
 }

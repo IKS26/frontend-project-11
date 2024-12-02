@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
-import bootstrap from './assets/bootstrap.js';
 
 const updateFeedback = (feedbackElement, message, isSuccess = false) => {
   feedbackElement.textContent = message;
@@ -32,6 +31,18 @@ const formControl = {
   },
 };
 
+const handleLoadingProcessError = (error) => {
+  if (error.isAxiosError) {
+    return 'network_error';
+  }
+
+  if (error.isParserError) {
+    return 'rss_error';
+  }
+
+  return 'unknown_error';
+};
+
 const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
   const {
     inputField, addButton, feedback, form,
@@ -56,7 +67,7 @@ const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
       inputField.classList.remove('border-danger');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = loadingProcess.error;
+      feedback.textContent = i18nextInstance.t('rss_added');
       form.reset();
       break;
     case 'fail':
@@ -64,7 +75,9 @@ const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
       inputField.classList.add('border-danger');
-      feedback.textContent = loadingProcess.error;
+      feedback.textContent = i18nextInstance.t(
+        handleLoadingProcessError(loadingProcess.error),
+      );
       break;
     default:
       console.error(`Unknown loading process state: ${loadingProcess.status}`);
@@ -99,11 +112,10 @@ const renderFeed = (feeds, feedsContainer) => {
 };
 
 const renderedPosts = new Set();
-
-const renderPosts = (posts, state, i18nextInstance) => {
+export const renderPosts = (posts, state, i18nextInstance) => {
   renderPostsTitle();
   const postsContainer = document.querySelector('.posts .list-group');
-
+  postsContainer.innerHTML = '';
   const newPosts = posts.filter((post) => !renderedPosts.has(post.id));
 
   newPosts.reverse().forEach((post) => {
@@ -119,44 +131,37 @@ const renderPosts = (posts, state, i18nextInstance) => {
 
     const postClass = state.ui.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
     postElement.innerHTML = `
-      <a href="${post.link}" class="${postClass}" target="_blank" rel="noopener noreferrer">${post.title}</a>
-      <button type="button" class="post-preview btn btn-outline-primary btn-sm" data-post-id="${post.id}">${i18nextInstance.t('preview')}</button>
+      <a href="${post.link}" class="${postClass}" target="_blank" rel="noopener noreferrer" data-post-id="${post.id}">
+        ${post.title}
+      </a>
+      <button 
+        type="button" 
+        class="btn btn-outline-primary btn-sm" 
+        data-post-id="${post.id}" 
+        data-bs-toggle="modal" 
+        data-bs-target="#modal">
+        ${i18nextInstance.t('preview')}
+      </button>
     `;
 
     postsContainer.prepend(postElement);
-    renderedPosts.add(post.id);
   });
 };
 
-const updatePostClass = (postId) => {
-  const postElement = document
-    .querySelector(`button[data-post-id="${postId}"]`)
-    ?.closest('li');
-  if (postElement) {
-    const link = postElement.querySelector('a');
-    if (link) {
-      link.classList.replace('fw-bold', 'fw-normal');
-    }
-  }
-};
-
-const renderModal = (title, description, link, postId) => {
-  let modalInstance;
+const renderModal = (state) => {
   const modalElement = document.getElementById('modal');
   const modalTitle = modalElement.querySelector('.modal-title');
   const modalBody = modalElement.querySelector('.modal-body');
   const fullArticleButton = modalElement.querySelector('.full-article');
 
-  modalTitle.textContent = title;
-  modalBody.textContent = description;
-  fullArticleButton.href = link;
+  const { postId } = state.ui.modal;
+  const post = state.posts.find((p) => p.id === postId);
 
-  if (!modalInstance) {
-    modalInstance = new bootstrap.Modal(modalElement);
-  }
+  if (!post) return;
 
-  updatePostClass(postId);
-  modalInstance.show();
+  modalTitle.textContent = post.title;
+  modalBody.textContent = post.description;
+  fullArticleButton.href = post.link;
 };
 
 const initView = (state, domElements, i18nextInstance) => {
@@ -178,6 +183,9 @@ const initView = (state, domElements, i18nextInstance) => {
           i18nextInstance,
         );
         break;
+      case path === 'ui.modal.postId':
+        renderModal(state);
+        break;
       default:
         break;
     }
@@ -185,7 +193,5 @@ const initView = (state, domElements, i18nextInstance) => {
 
   return watchedState;
 };
-
-export { renderPosts, renderModal };
 
 export default initView;
