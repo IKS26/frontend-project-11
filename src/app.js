@@ -38,6 +38,18 @@ const handleLoadingErrors = (error) => {
   return 'unknown_error';
 };
 
+const createPost = (item, feedId) => ({
+  title: item.title,
+  description: item.description,
+  link: item.link,
+  feedId,
+  id: _.uniqueId(),
+});
+
+const filterExistingPosts = (items, posts, feedId) => items.filter(
+  (item) => !posts.some((post) => post.link === item.link && post.feedId === feedId),
+);
+
 const loadRss = (url, watchedState) => {
   watchedState.loadingProcess.status = 'loading';
 
@@ -53,16 +65,14 @@ const loadRss = (url, watchedState) => {
         description,
       };
 
-      const posts = items.map((item) => ({
-        title: item.title,
-        description: item.description,
-        link: item.link,
-        feedId: feed.id,
-        id: _.uniqueId(),
-      }));
+      const newPosts = filterExistingPosts(
+        items,
+        watchedState.posts,
+        feed.id,
+      ).map((item) => createPost(item, feed.id));
 
       watchedState.feeds.push(feed);
-      watchedState.posts = [...posts, ...watchedState.posts];
+      watchedState.posts = [...newPosts, ...watchedState.posts];
       watchedState.loadingProcess.status = 'success';
     })
     .catch((error) => {
@@ -114,19 +124,11 @@ const updateRss = (watchedState) => {
       const parsedData = parseRss(response.data.contents);
       const { items } = parsedData;
 
-      const newPosts = items
-        .filter(
-          (item) => !posts.some(
-            (post) => post.link === item.link && post.feedId === feed.id,
-          ),
-        )
-        .map((item) => ({
-          title: item.title,
-          description: item.description,
-          link: item.link,
-          feedId: feed.id,
-          id: _.uniqueId(),
-        }));
+      const newPosts = filterExistingPosts(
+        items,
+        watchedState.posts,
+        feed.id,
+      ).map((item) => createPost(item, feed.id));
 
       watchedState.posts = [...newPosts, ...posts];
     })
