@@ -6,5 +6,9 @@
   "rss_error": "The resource does not contain valid RSS",
   "network_error": "Network error",
   "unknown_error": "Unknown error",
-  "preview": "Preview"
+  "feeds": "Feeds",
+  "posts": "Posts",
+  "preview": "Preview",
+  "full_article": "Read the article",
+  "close": "Close"
 }

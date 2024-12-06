@@ -6,5 +6,9 @@
   "rss_error": "Ресурс не содержит валидный RSS",
   "network_error": "Ошибка сети",
   "unknown_error": "Неизвестная ошибка",
-  "preview": "Просмотр"
+  "feeds": "RSS-каналы",
+  "posts": "Посты",
+  "preview": "Просмотр",
+  "full_article": "Читать полностью",
+  "close": "Закрыть"
 }

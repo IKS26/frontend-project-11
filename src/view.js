@@ -1,25 +1,6 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
 
-const updateFeedback = (feedbackElement, message, isSuccess = false) => {
-  feedbackElement.textContent = message;
-  feedbackElement.classList.toggle('text-danger', !isSuccess);
-  feedbackElement.classList.toggle('text-success', isSuccess);
-};
-
-const updateInputFieldValidation = (inputField, isValid = true) => {
-  inputField.classList.toggle('is-invalid', !isValid);
-};
-
-const updateFormState = (form, domElements, i18nextInstance, focus = true) => {
-  const { inputField, feedback } = domElements;
-  if (!inputField || !feedback) return;
-
-  updateInputFieldValidation(inputField, form.isValid);
-  updateFeedback(feedback, i18nextInstance.t(form.error), form.isValid);
-  if (focus) inputField.focus();
-};
-
 const formControl = {
   disable: (inputField, addButton) => {
     inputField.readOnly = true;
@@ -31,94 +12,109 @@ const formControl = {
   },
 };
 
-const handleLoadingProcessError = (error) => {
-  if (error.isAxiosError) {
-    return 'network_error';
-  }
+const updateFormState = (state, domElements, i18nextInstance, focus = true) => {
+  const { form } = state;
+  const { inputField, feedback } = domElements;
 
-  if (error.isParserError) {
-    return 'rss_error';
-  }
+  inputField.classList.toggle('is-invalid', !form.isValid);
 
-  return 'unknown_error';
+  feedback.textContent = i18nextInstance.t(form.error);
+  feedback.classList.toggle('text-danger', !form.isValid);
+  feedback.classList.toggle('text-success', form.isValid);
+
+  if (focus) {
+    inputField.focus();
+  }
 };
 
-const handleLoadingProcess = (loadingProcess, domElements, i18nextInstance) => {
+const handleLoadingProcess = (state, domElements, i18nextInstance) => {
+  const { loadingProcess } = state;
   const {
     inputField, addButton, feedback, form,
   } = domElements;
 
-  if (!inputField || !addButton || !feedback || !form) {
-    console.error('Missing required DOM elements in handleLoadingProcess.');
-    return;
-  }
-
   switch (loadingProcess.status) {
     case 'idle':
       formControl.enable(inputField, addButton);
-      inputField.focus();
+      updateFormState(state, domElements, i18nextInstance);
       break;
+
     case 'loading':
       formControl.disable(inputField, addButton);
-      updateFormState(form, domElements, i18nextInstance);
+      updateFormState(state, domElements, i18nextInstance, false);
       break;
+
     case 'success':
       formControl.enable(inputField, addButton);
       inputField.classList.remove('border-danger');
+      feedback.textContent = i18nextInstance.t('rss_added');
       feedback.classList.remove('text-danger');
       feedback.classList.add('text-success');
-      feedback.textContent = i18nextInstance.t('rss_added');
       form.reset();
       break;
+
     case 'fail':
       formControl.enable(inputField, addButton);
+      inputField.classList.add('border-danger');
+      feedback.textContent = i18nextInstance.t(loadingProcess.error);
       feedback.classList.remove('text-success');
       feedback.classList.add('text-danger');
-      inputField.classList.add('border-danger');
-      feedback.textContent = i18nextInstance.t(
-        handleLoadingProcessError(loadingProcess.error),
-      );
       break;
+
     default:
       console.error(`Unknown loading process state: ${loadingProcess.status}`);
   }
 };
 
-const renderTitle = (containerSelector, titleText) => {
-  const container = document.querySelector(containerSelector);
-  if (!container.querySelector('.card-title')) {
-    const titleElement = document.createElement('div');
-    titleElement.classList.add('card-body');
-    titleElement.innerHTML = `<h2 class="card-title h4">${titleText}</h2>`;
-    container.prepend(titleElement);
-  }
-};
+const renderFeed = (state, domElements, i18nextInstance) => {
+  domElements.feeds.innerHTML = '';
 
-const renderFeedsTitle = () => renderTitle('.feeds .card', 'RSS-каналы');
-const renderPostsTitle = () => renderTitle('.posts .card', 'Посты');
+  const titleElement = document.createElement('div');
+  titleElement.classList.add('card-body');
 
-const renderFeed = (feeds, feedsContainer) => {
-  renderFeedsTitle();
-  feedsContainer.innerHTML = '';
-  feeds.forEach((feed) => {
-    const feedElement = document.createElement('li');
-    feedElement.classList.add('list-group-item', 'border-0', 'border-end-0');
-    feedElement.innerHTML = `
-      <h3 class="h6 m-0">${feed.title}</h3>
-      <p class="m-0 small text-black-50">${feed.description}</p>
-    `;
-    feedsContainer.prepend(feedElement);
+  const title = document.createElement('h2');
+  title.classList.add('card-title', 'h4');
+  title.textContent = i18nextInstance.t('feeds');
+  titleElement.prepend(title);
+
+  const feedsList = document.createElement('ul');
+  feedsList.classList.add('list-group', 'border-0', 'rounded-0');
+
+  state.feeds.forEach((feed) => {
+    const feedItem = document.createElement('li');
+    feedItem.classList.add('list-group-item', 'border-0', 'border-end-0');
+
+    const feedTitle = document.createElement('h3');
+    feedTitle.classList.add('h6', 'm-0');
+    feedTitle.textContent = feed.title;
+
+    const feedDescription = document.createElement('p');
+    feedDescription.classList.add('m-0', 'small', 'text-black-50');
+    feedDescription.textContent = feed.description;
+
+    feedItem.append(feedTitle, feedDescription);
+    feedsList.prepend(feedItem);
   });
+
+  domElements.feeds.append(titleElement, feedsList);
 };
 
-const renderedPosts = new Set();
-export const renderPosts = (posts, state, i18nextInstance) => {
-  renderPostsTitle();
-  const postsContainer = document.querySelector('.posts .list-group');
-  postsContainer.innerHTML = '';
-  const newPosts = posts.filter((post) => !renderedPosts.has(post.id));
+const renderPosts = (state, domElements, i18nextInstance) => {
+  domElements.posts.innerHTML = '';
 
-  newPosts.reverse().forEach((post) => {
+  const titleElement = document.createElement('div');
+  titleElement.classList.add('card-body');
+
+  const title = document.createElement('h2');
+  title.classList.add('card-title', 'h4');
+  title.textContent = i18nextInstance.t('posts');
+  titleElement.prepend(title);
+
+  const postsList = document.createElement('ul');
+  postsList.classList.add('list-group', 'border-0', 'rounded-0');
+
+  const postsCopy = [...state.posts].reverse();
+  postsCopy.forEach((post) => {
     const postElement = document.createElement('li');
     postElement.classList.add(
       'list-group-item',
@@ -129,30 +125,41 @@ export const renderPosts = (posts, state, i18nextInstance) => {
       'border-end-0',
     );
 
-    const postClass = state.ui.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold';
-    postElement.innerHTML = `
-      <a href="${post.link}" class="${postClass}" target="_blank" rel="noopener noreferrer" data-post-id="${post.id}">
-        ${post.title}
-      </a>
-      <button 
-        type="button" 
-        class="btn btn-outline-primary btn-sm" 
-        data-post-id="${post.id}" 
-        data-bs-toggle="modal" 
-        data-bs-target="#modal">
-        ${i18nextInstance.t('preview')}
-      </button>
-    `;
+    const postLink = document.createElement('a');
+    postLink.href = post.link;
+    postLink.textContent = post.title;
+    postLink.classList.add(
+      state.ui.readPosts.includes(post.id) ? 'fw-normal' : 'fw-bold',
+    );
+    postLink.target = '_blank';
+    postLink.rel = 'noopener noreferrer';
+    postLink.dataset.postId = post.id;
 
-    postsContainer.prepend(postElement);
+    const previewButton = document.createElement('button');
+    previewButton.type = 'button';
+    previewButton.textContent = i18nextInstance.t('preview');
+    previewButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    previewButton.dataset.postId = post.id;
+    previewButton.dataset.bsToggle = 'modal';
+    previewButton.dataset.bsTarget = '#modal';
+
+    postElement.append(postLink, previewButton);
+    postsList.prepend(postElement);
   });
+
+  domElements.posts.prepend(titleElement);
+  domElements.posts.append(postsList);
 };
 
-const renderModal = (state) => {
-  const modalElement = document.getElementById('modal');
+const renderModal = (state, domElements, i18nextInstance) => {
+  const modalElement = domElements.modal;
   const modalTitle = modalElement.querySelector('.modal-title');
   const modalBody = modalElement.querySelector('.modal-body');
   const fullArticleButton = modalElement.querySelector('.full-article');
+  const closeButton = modalElement.querySelector('.close');
+
+  fullArticleButton.textContent = i18nextInstance.t('full_article');
+  closeButton.textContent = i18nextInstance.t('close');
 
   const { postId } = state.ui.modal;
   const post = state.posts.find((p) => p.id === postId);
@@ -165,29 +172,23 @@ const renderModal = (state) => {
 };
 
 const initView = (state, domElements, i18nextInstance) => {
+  const pathHandlers = {
+    feeds: renderFeed,
+    posts: renderPosts,
+    form: updateFormState,
+    loadingProcess: handleLoadingProcess,
+    'ui.readPosts': renderPosts,
+    'ui.modal.postId': renderModal,
+  };
+
   const watchedState = onChange(state, (path) => {
-    switch (true) {
-      case path === 'feeds':
-        renderFeed(state.feeds, domElements.feedsContainer);
-        break;
-      case path === 'posts':
-        renderPosts(state.posts, state, i18nextInstance);
-        break;
-      case path.startsWith('form'):
-        updateFormState(state.form, domElements, i18nextInstance);
-        break;
-      case path.startsWith('loadingProcess'):
-        handleLoadingProcess(
-          state.loadingProcess,
-          domElements,
-          i18nextInstance,
-        );
-        break;
-      case path === 'ui.modal.postId':
-        renderModal(state);
-        break;
-      default:
-        break;
+    const handlerEntry = Object.entries(pathHandlers).find(([key]) => path.startsWith(key));
+
+    if (handlerEntry) {
+      const [, handler] = handlerEntry;
+      handler(state, domElements, i18nextInstance);
+    } else {
+      console.warn(`No handler found for path: ${path}`);
     }
   });
 

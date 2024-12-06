@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
 import i18next from 'i18next';
-import initView, { renderPosts } from './view.js';
+import initView from './view.js';
 import parseRss from './parser.js';
 import resources from './locales/index.js';
 import customLocale from './locales/customLocale.js';
@@ -24,6 +24,18 @@ const addProxy = (url) => {
   proxyUrl.searchParams.append('url', url);
   proxyUrl.searchParams.append('disableCache', 'true');
   return proxyUrl.toString();
+};
+
+const handleLoadingErrors = (error) => {
+  if (error.isAxiosError) {
+    return 'network_error';
+  }
+
+  if (error.isParserError) {
+    return 'rss_error';
+  }
+
+  return 'unknown_error';
 };
 
 const loadRss = (url, watchedState) => {
@@ -56,7 +68,7 @@ const loadRss = (url, watchedState) => {
     .catch((error) => {
       console.error('Error loading RSS:', error);
       watchedState.loadingProcess.status = 'fail';
-      watchedState.loadingProcess.error = error;
+      watchedState.loadingProcess.error = handleLoadingErrors(error);
     });
 };
 
@@ -83,13 +95,14 @@ const handleFormSubmit = (event, watchedState, i18nextInstance) => {
   });
 };
 
-const handlePostClick = (event, watchedState, i18nextInstance) => {
+const handlePostClick = (event, watchedState) => {
   const { postId } = event.target.dataset;
   if (!postId) return;
 
-  watchedState.ui.readPosts.add(postId);
+  if (!watchedState.ui.readPosts.includes(postId)) {
+    watchedState.ui.readPosts.push(postId);
+  }
   watchedState.ui.modal.postId = postId;
-  renderPosts(watchedState.posts, watchedState, i18nextInstance);
 };
 
 const updateRss = (watchedState) => {
@@ -151,7 +164,7 @@ const runApp = () => {
           error: '',
         },
         ui: {
-          readPosts: new Set(),
+          readPosts: [],
           modal: {
             postId: null,
           },
@@ -163,14 +176,16 @@ const runApp = () => {
         inputField: document.querySelector('#url-input'),
         addButton: document.querySelector('.rss-form button[type="submit"]'),
         feedback: document.querySelector('.feedback'),
-        feedsContainer: document.querySelector('.feeds .list-group'),
-        postsContainer: document.querySelector('.posts .list-group'),
+        feeds: document.querySelector('.feeds .card'),
+        posts: document.querySelector('.posts .card'),
+        modal: document.querySelector('.modal'),
       };
 
       const watchedState = initView(initialState, domElements, i18nextInstance);
 
-      domElements.form.addEventListener('submit', (event) => handleFormSubmit(event, watchedState, i18nextInstance));
-      domElements.postsContainer.addEventListener('click', (event) => handlePostClick(event, watchedState, i18nextInstance));
+      const { form, posts } = domElements;
+      form.addEventListener('submit', (event) => handleFormSubmit(event, watchedState, i18nextInstance));
+      posts.addEventListener('click', (event) => handlePostClick(event, watchedState));
 
       updateRss(watchedState);
     })
