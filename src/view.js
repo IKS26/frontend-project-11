@@ -12,17 +12,24 @@ const formControl = {
   },
 };
 
-const updateFormState = (state, domElements, i18nextInstance, focus = true) => {
+const updateFormState = (
+  state,
+  domElements,
+  i18nextInstance,
+  isFocus = true,
+) => {
   const { form } = state;
   const { inputField, feedback } = domElements;
 
-  inputField.classList.toggle('is-invalid', !form.isValid);
+  const hasError = !form.isValid;
+
+  inputField.classList.toggle('is-invalid', hasError);
 
   feedback.textContent = i18nextInstance.t(form.error);
-  feedback.classList.toggle('text-danger', !form.isValid);
+  feedback.classList.toggle('text-danger', hasError);
   feedback.classList.toggle('text-success', form.isValid);
 
-  if (focus) {
+  if (isFocus) {
     inputField.focus();
   }
 };
@@ -129,7 +136,7 @@ const renderPosts = (state, domElements, i18nextInstance) => {
     postLink.href = post.link;
     postLink.textContent = post.title;
     postLink.classList.add(
-      state.ui.readPosts.includes(post.id) ? 'fw-normal' : 'fw-bold',
+      state.ui.readPosts.has(post.id) ? 'fw-normal' : 'fw-bold',
     );
     postLink.target = '_blank';
     postLink.rel = 'noopener noreferrer';
@@ -162,33 +169,43 @@ const renderModal = (state, domElements, i18nextInstance) => {
   closeButton.textContent = i18nextInstance.t('close');
 
   const { postId } = state.ui.modal;
-  const post = state.posts.find((p) => p.id === postId);
+  const selectedPost = state.posts.find((post) => post.id === postId);
 
-  if (!post) return;
+  if (!selectedPost) return;
 
-  modalTitle.textContent = post.title;
-  modalBody.textContent = post.description;
-  fullArticleButton.href = post.link;
+  modalTitle.textContent = selectedPost.title;
+  modalBody.textContent = selectedPost.description;
+  fullArticleButton.href = selectedPost.link;
 };
 
 const initView = (state, domElements, i18nextInstance) => {
-  const pathHandlers = {
-    feeds: renderFeed,
-    posts: renderPosts,
-    form: updateFormState,
-    loadingProcess: handleLoadingProcess,
-    'ui.readPosts': renderPosts,
-    'ui.modal.postId': renderModal,
-  };
-
   const watchedState = onChange(state, (path) => {
-    const handlerEntry = Object.entries(pathHandlers).find(([key]) => path.startsWith(key));
+    switch (path) {
+      case 'feeds':
+        renderFeed(state, domElements, i18nextInstance);
+        break;
 
-    if (handlerEntry) {
-      const [, handler] = handlerEntry;
-      handler(state, domElements, i18nextInstance);
-    } else {
-      console.warn(`No handler found for path: ${path}`);
+      case 'posts':
+      case 'ui.readPosts':
+        renderPosts(state, domElements, i18nextInstance);
+        break;
+
+      case 'form':
+      case 'form.isValid':
+        updateFormState(state, domElements, i18nextInstance);
+        break;
+
+      case 'loadingProcess.error':
+      case 'loadingProcess.status':
+        handleLoadingProcess(state, domElements, i18nextInstance);
+        break;
+
+      case 'ui.modal.postId':
+        renderModal(state, domElements, i18nextInstance);
+        break;
+
+      default:
+        break;
     }
   });
 

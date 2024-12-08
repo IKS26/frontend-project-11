@@ -94,7 +94,7 @@ const handleFormSubmit = (event, watchedState, i18nextInstance) => {
   validate(url, existingUrls).then((validationError) => {
     if (validationError) {
       watchedState.form = {
-        error: i18nextInstance.t(validationError),
+        error: validationError,
         isValid: false,
       };
       return;
@@ -109,9 +109,7 @@ const handlePostClick = (event, watchedState) => {
   const { postId } = event.target.dataset;
   if (!postId) return;
 
-  if (!watchedState.ui.readPosts.includes(postId)) {
-    watchedState.ui.readPosts.push(postId);
-  }
+  watchedState.ui.readPosts.add(postId);
   watchedState.ui.modal.postId = postId;
 };
 
@@ -166,7 +164,7 @@ const runApp = () => {
           error: '',
         },
         ui: {
-          readPosts: [],
+          readPosts: new Set(),
           modal: {
             postId: null,
           },
